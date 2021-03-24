@@ -1,0 +1,33 @@
+{
+    "name": "aroutinr/laravel-invoice",
+    "description": "Create invoice for any model of your Laravel App",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Richard Aroutin",
+            "email": "raroutin@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+           "AroutinR\\Invoice\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AroutinR\\Invoice\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AroutinR\\Invoice\\InvoiceServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.0",
+        "phpunit/phpunit": "^9.5"
+    }
+}
