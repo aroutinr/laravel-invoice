@@ -43,9 +43,9 @@ class InvoiceLinesTest extends TestCase
 	{
 		$this->invoice->addFixedDiscountLine('A Cool Discout', 100);
 
-		$this->assertEquals('discount', $this->invoice->lines[0]['line_type']);
-		$this->assertEquals('A Cool Discout', $this->invoice->lines[0]['description']);
-		$this->assertEquals(100, $this->invoice->lines[0]['amount']);
+		$this->assertEquals('discount', $this->invoice->lines['discount']['line_type']);
+		$this->assertEquals('A Cool Discout', $this->invoice->lines['discount']['description']);
+		$this->assertEquals(100, $this->invoice->lines['discount']['amount']);
 	}
 
 	/** @test */
@@ -53,10 +53,27 @@ class InvoiceLinesTest extends TestCase
 	{
 		$this->invoice->addPercentDiscountLine('A Cool Discout', 10);
 
-		$this->assertEquals('discount', $this->invoice->lines[0]['line_type']);
-		$this->assertEquals('A Cool Discout', $this->invoice->lines[0]['description']);
-		$this->assertEquals(10, $this->invoice->lines[0]['amount']);
-		$this->assertTrue($this->invoice->lines[0]['percent_based']);
+		$this->assertEquals('discount', $this->invoice->lines['discount']['line_type']);
+		$this->assertEquals('A Cool Discout', $this->invoice->lines['discount']['description']);
+		$this->assertEquals(10, $this->invoice->lines['discount']['amount']);
+		$this->assertTrue($this->invoice->lines['discount']['percent_based']);
+	}
+
+	/** @test */
+	public function only_one_discount_line_can_be_added()
+	{
+		$this->invoice->addPercentDiscountLine('A Cool Discout', 10);
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('Only one discount line can be added');
+
+		$this->invoice->addFixedDiscountLine('Another Cool Discout', 1000);
+
+		$this->assertEquals('discount', $this->invoice->lines['discount']['line_type']);
+		$this->assertEquals('A Cool Discout', $this->invoice->lines['discount']['description']);
+		$this->assertEquals(10, $this->invoice->lines['discount']['amount']);
+		$this->assertTrue($this->invoice->lines['discount']['percent_based']);
 	}
 
 	/** @test */
@@ -64,10 +81,27 @@ class InvoiceLinesTest extends TestCase
 	{
 		$this->invoice->addTaxLine('Tax 3%', 3);
 
-		$this->assertEquals('tax', $this->invoice->lines[0]['line_type']);
-		$this->assertEquals('Tax 3%', $this->invoice->lines[0]['description']);
-		$this->assertEquals(3, $this->invoice->lines[0]['amount']);
-		$this->assertTrue($this->invoice->lines[0]['percent_based']);
+		$this->assertEquals('tax', $this->invoice->lines['tax']['line_type']);
+		$this->assertEquals('Tax 3%', $this->invoice->lines['tax']['description']);
+		$this->assertEquals(3, $this->invoice->lines['tax']['amount']);
+		$this->assertTrue($this->invoice->lines['tax']['percent_based']);
+	}
+
+	/** @test */
+	public function only_one_tax_line_can_be_added()
+	{
+		$this->invoice->addTaxLine('Tax 3%', 3);
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('Only one tax line can be added');
+
+		$this->invoice->addTaxLine('Tax 7%', 7);
+
+		$this->assertEquals('tax', $this->invoice->lines['tax']['line_type']);
+		$this->assertEquals('Tax 3%', $this->invoice->lines['tax']['description']);
+		$this->assertEquals(3, $this->invoice->lines['tax']['amount']);
+		$this->assertTrue($this->invoice->lines['tax']['percent_based']);
 	}
 
 	/** @test */

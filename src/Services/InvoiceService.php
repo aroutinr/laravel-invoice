@@ -5,6 +5,7 @@ namespace AroutinR\Invoice\Services;
 use AroutinR\Invoice\Interfaces\InvoiceServiceInterface;
 use AroutinR\Invoice\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class InvoiceService implements InvoiceServiceInterface
@@ -29,6 +30,10 @@ class InvoiceService implements InvoiceServiceInterface
 
 	public function save(): Invoice
 	{
+		if (!in_array('invoice', Arr::flatten($this->lines))) {
+			throw new \Exception('You must add at least one invoice line to the invoice', 1);
+		}
+
 		$invoice = Invoice::create([
 			'customer_type' => get_class($this->customer),
 			'customer_id' => $this->customer->id,
@@ -97,7 +102,11 @@ class InvoiceService implements InvoiceServiceInterface
 
 	public function addFixedDiscountLine(string $description, int $amount): InvoiceService
 	{
-		$this->lines[] = [
+		if (Arr::exists($this->lines, 'discount')) {
+			throw new \Exception('Only one discount line can be added', 1);
+		}
+
+		$this->lines['discount'] = [
 			'line_type' => 'discount',
 			'description' => $description,
 			'amount' => $amount,
@@ -108,7 +117,11 @@ class InvoiceService implements InvoiceServiceInterface
 
 	public function addPercentDiscountLine(string $description, int $amount): InvoiceService
 	{
-		$this->lines[] = [
+		if (Arr::exists($this->lines, 'discount')) {
+			throw new \Exception('Only one discount line can be added', 1);
+		}
+
+		$this->lines['discount'] = [
 			'line_type' => 'discount',
 			'description' => $description,
 			'amount' => $amount,
@@ -120,7 +133,11 @@ class InvoiceService implements InvoiceServiceInterface
 
 	public function addTaxLine(string $description, int $amount): InvoiceService
 	{
-		$this->lines[] = [
+		if (Arr::exists($this->lines, 'tax')) {
+			throw new \Exception('Only one tax line can be added', 1);
+		}
+
+		$this->lines['tax'] = [
 			'line_type' => 'tax',
 			'description' => $description,
 			'amount' => $amount,

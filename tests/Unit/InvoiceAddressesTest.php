@@ -25,6 +25,7 @@ class InvoiceAddressesTest extends TestCase
         $this->invoiceable = factory(Service::class)->create();
 
         $this->invoice = new InvoiceService($this->customer, $this->invoiceable);
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
     }
 
 	/** @test */

@@ -28,13 +28,17 @@ class InvoiceTest extends TestCase
     }
 
 	/** @test */
-	public function invoice_can_be_created_only_with_customer_and_invoiceable()
+	public function invoice_need_at_leas_on_invoice_line_to_be_created()
 	{
-		$invoice = $this->invoice->save();
+		$this->expectException(\Exception::class);
 
-		$this->assertEquals($this->customer->name, $invoice->customer->name);
-		$this->assertEquals($this->invoiceable->title, $invoice->invoiceable->title);
-		$this->assertDatabaseCount('invoices', 1);
+		$this->invoice->save();
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('You must add at least one invoice line to the invoice');
+
+		$this->assertDatabaseCount('invoices', 0);
 	}
 
 	/** @test */
@@ -73,12 +77,7 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function currency_can_only_have_three_characters()
 	{
-		$this->invoice->setCurrency('USD');
-		$this->assertEquals('USD', $this->invoice->currency);
-
-		$this->expectException('Exception');
-		$this->expectExceptionCode(1);
-		$this->expectExceptionMessage('The currency should only be 3 characters long');
+		$this->expectException(\Exception::class);
 
 		$this->invoice->setCurrency('USDS');
 		$this->assertDontSeeText('USDS', $this->invoice->currency);
@@ -88,5 +87,9 @@ class InvoiceTest extends TestCase
 
 		$this->invoice->setCurrency('$');
 		$this->assertDontSeeText('$', $this->invoice->currency);
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('The currency should only be 3 characters long');
 	}
 }
