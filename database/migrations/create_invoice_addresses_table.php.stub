@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateInvoiceAddressesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create(config('invoice.table_names.invoice_addresses'), function (Blueprint $table) {
+            $table->id();
+            $table->morphs('customer');
+            $table->foreignId('invoice_id')->constrained(config('invoice.table_names.invoices'));
+            $table->enum('address_type', ['billing', 'shipping']);
+            $table->string('name')->nullable();
+            $table->string('line_1')->nullable();
+            $table->string('line_2')->nullable();
+            $table->string('line_3')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists(config('invoice.table_names.invoice_addresses'));
+    }
+}

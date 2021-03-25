@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateInvoiceLinesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create(config('invoice.table_names.invoice_lines'), function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('invoice_id')->constrained(config('invoice.table_names.invoices'));
+            $table->enum('line_type', ['discount', 'invoice', 'tax']);
+            $table->string('description')->nullable();
+            $table->bigInteger('quantity')->default(1);
+            $table->bigInteger('amount')->default(0);
+            $table->boolean('percent_based')->default(false);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists(config('invoice.table_names.invoice_lines'));
+    }
+}
