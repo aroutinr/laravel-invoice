@@ -42,6 +42,79 @@ class InvoiceTest extends TestCase
 	}
 
 	/** @test */
+	public function calculate_invoice_amount()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertSame(30000, $invoice->amount);
+	}
+
+	/** @test */
+	public function calculate_invoice_amount_with_fixed_discount()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+		$this->invoice->addFixedDiscountLine('A Cool Discout', 5000);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertSame(25000, $invoice->amount);
+	}
+
+	/** @test */
+	public function calculate_invoice_amount_with_percent_discount()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+		$this->invoice->addPercentDiscountLine('A Cool Discout', 10);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertSame(27000, $invoice->amount);
+	}
+
+	/** @test */
+	public function calculate_invoice_amount_with_tax()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+		$this->invoice->addTaxLine('Tax 3%', 3);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertSame(30900, $invoice->amount);
+	}
+
+	/** @test */
+	public function calculate_invoice_amount_with_fixed_discount_and_tax()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+		$this->invoice->addFixedDiscountLine('A Cool Discout', 5000);
+		$this->invoice->addTaxLine('Tax 3%', 3);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertSame(25750, $invoice->amount);
+	}
+
+	/** @test */
+	public function calculate_invoice_amount_with_percent_discount_and_tax()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+		$this->invoice->addPercentDiscountLine('A Cool Discout', 10);
+		$this->invoice->addTaxLine('Tax 3%', 3);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertSame(27810, $invoice->amount);
+	}
+
+	/** @test */
 	public function can_set_invoice_number()
 	{
 		$this->invoice->setNumber('INVOICE-1234');

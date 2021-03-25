@@ -41,7 +41,8 @@ class InvoiceService implements InvoiceServiceInterface
 			'invoiceable_id' => $this->invoiceable->id,
 			'number' => $this->number,
 			'currency' => $this->currency,
-			'date' => $this->date
+			'date' => $this->date,
+			'amount' => $this->calculateInvoiceAmount()
 		]);
 
 		$invoice->lines()->createMany($this->lines);
@@ -110,6 +111,7 @@ class InvoiceService implements InvoiceServiceInterface
 			'line_type' => 'discount',
 			'description' => $description,
 			'amount' => $amount,
+			'percent_based' => false,
 		];
 
 		return $this;
@@ -171,5 +173,28 @@ class InvoiceService implements InvoiceServiceInterface
 		];
 
 		return $this;
+	}
+
+	protected function calculateInvoiceAmount(): int
+	{
+		$amount = 0;
+
+		foreach ($this->lines as $line) {
+			if ($line['line_type'] === 'invoice') {
+				$amount += $line['quantity'] * $line['amount'];
+			}
+		}
+
+		if (Arr::exists($this->lines, 'discount')) {
+			$amount -= $this->lines['discount']['percent_based'] 
+				? $amount * $this->lines['discount']['amount'] / 100
+				: $this->lines['discount']['amount'];
+		}
+
+		if (Arr::exists($this->lines, 'tax')) {
+			$amount += $amount * ($this->lines['tax']['amount'] / 100);
+		}
+
+		return $amount;
 	}
 }
