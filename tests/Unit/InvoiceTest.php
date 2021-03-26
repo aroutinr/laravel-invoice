@@ -188,7 +188,7 @@ class InvoiceTest extends TestCase
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
-		$this->expectExceptionMessage('You can add a maximum of 3 custom fields');
+		$this->expectExceptionMessage('You can add a maximum of 4 custom fields');
 	}
 
 	/** @test */
