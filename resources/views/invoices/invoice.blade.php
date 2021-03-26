@@ -257,19 +257,11 @@
 					</th>
 					<th class="text-right">
 						@if ($invoice->discount)
-							-
-							{{ 
-								$invoice->discount->percent_base 
-									? $invoice->linesAmount * $invoice->discount->amount / 100
-									: $invoice->discount->amount
-							}}
+							- {{ $invoice->discountAmount }}
 							<br />
 						@endif
 						@if ($invoice->tax)
-							+
-							{{ 
-								$invoice->linesAmount * ($invoice->tax->amount / 100) 
-							}}
+							+ {{ $invoice->taxAmount }}
 							<br />
 						@endif
 						{{ $invoice->amount }}

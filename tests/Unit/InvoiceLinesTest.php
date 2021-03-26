@@ -179,4 +179,22 @@ class InvoiceLinesTest extends TestCase
 		$this->assertEquals(20000, $invoice->linesAmount);
 		$this->assertEquals(18540, $invoice->amount);
 	}
+
+	/** @test */
+	public function test_invoice_custom_attributes()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+		$this->invoice->addFixedDiscountLine('A Cool Discout', 5000);
+		$this->invoice->addTaxLine('Tax 3%', 3);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertDatabaseCount('invoices', 1);
+		$this->assertDatabaseCount('invoice_lines', 4);
+		$this->assertEquals(30000, $invoice->linesAmount);
+		$this->assertEquals(25000, $invoice->linesAmountWithDiscount);
+		$this->assertEquals(5000, $invoice->discountAmount);
+		$this->assertEquals(750, $invoice->taxAmount);
+	}
 }

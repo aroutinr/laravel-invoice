@@ -117,4 +117,46 @@ class Invoice extends Model
 
         return $amount;
     }
+
+    /**
+     * Get the invoice amount only with discount
+     */
+    public function getLinesAmountWithDiscountAttribute()
+    {
+        $amount = $this->getLinesAmountAttribute();
+
+        if ($this->discount) {
+            $amount -= $this->discount->percent_based
+                ? $amount * $this->discount->amount / 100
+                : $this->discount->amount;
+        }
+
+        return $amount;
+    }
+
+    /**
+     * Get the invoice discount amount
+     */
+    public function getDiscountAmountAttribute()
+    {
+        if (!$this->discount) {
+            throw new \Exception("This invoice does not have discounts", 1);
+        }
+
+        return $this->discount->percent_based
+            ? $this->getLinesAmountAttribute() * $this->discount->amount / 100
+            : $this->discount->amount;
+    }
+
+    /**
+     * Get the invoice tax amount
+     */
+    public function getTaxAmountAttribute()
+    {
+        if (!$this->tax) {
+            throw new \Exception("This invoice does not have taxes", 1);
+        }
+
+        return $this->getLinesAmountWithDiscountAttribute() * ($this->tax->amount / 100);
+    }
 }
