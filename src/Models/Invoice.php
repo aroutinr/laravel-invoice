@@ -103,4 +103,18 @@ class Invoice extends Model
         return $this->hasOne(InvoiceAddress::class)
             ->where('address_type', 'shipping');
     }
+
+    /**
+     * Get the invoice amount without discount and tax
+     */
+    public function getLinesAmountAttribute()
+    {
+        $amount = 0;
+
+        foreach ($this->lines as $line) {
+            $amount += $line->quantity * $line->amount;
+        }
+
+        return $amount;
+    }
 }
