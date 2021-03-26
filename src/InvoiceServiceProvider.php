@@ -19,6 +19,8 @@ class InvoiceServiceProvider extends ServiceProvider
             return new InvoiceService();
         });
 
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-invoice');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/config.php' => config_path('invoice.php'),
@@ -41,6 +43,10 @@ class InvoiceServiceProvider extends ServiceProvider
                     __DIR__ . '/../database/migrations/create_invoice_addresses_table.php.stub' => database_path('migrations/2021_03_24_173615_create_invoice_addresses_table.php'),
                 ], 'migrations');
             }
+
+            $this->publishes([
+                __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-invoice'),
+            ], 'views');
         }
 	}
 }

@@ -6,10 +6,12 @@ use AroutinR\Invoice\Interfaces\InvoiceServiceInterface;
 use AroutinR\Invoice\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 class InvoiceService implements InvoiceServiceInterface
 {
+	public $invoice;
 	public $customer;
 	public $invoiceable;
 	public $number;
@@ -35,7 +37,7 @@ class InvoiceService implements InvoiceServiceInterface
 			throw new \Exception('You must add at least one invoice line to the invoice', 1);
 		}
 
-		$invoice = Invoice::create([
+		$this->invoice = Invoice::create([
 			'customer_type' => get_class($this->customer),
 			'customer_id' => $this->customer->id,
 			'invoiceable_type' => get_class($this->invoiceable),
@@ -47,23 +49,23 @@ class InvoiceService implements InvoiceServiceInterface
 			'custom_fields' => $this->customFields
 		]);
 
-		$invoice->lines()->createMany($this->lines);
+		$this->invoice->lines()->createMany($this->lines);
 
 		if ($this->billingAddress) {
-			$invoice->billingAddress()->create($this->billingAddress + [
+			$this->invoice->billingAddress()->create($this->billingAddress + [
 				'customer_type' => get_class($this->customer),
 				'customer_id' => $this->customer->id,
 			]);
 		}
 
 		if ($this->shippingAddress) {
-			$invoice->shippingAddress()->create($this->shippingAddress + [
+			$this->invoice->shippingAddress()->create($this->shippingAddress + [
 				'customer_type' => get_class($this->customer),
 				'customer_id' => $this->customer->id,
 			]);
 		}
 
-		return $invoice;
+		return $this->invoice;
 	}
 
 	public function setNumber(string $number): InvoiceService
@@ -203,6 +205,13 @@ class InvoiceService implements InvoiceServiceInterface
 
 		return $this;
 	}
+
+    public function view(array $data = []): \Illuminate\Contracts\View\View
+    {
+        return View::make('laravel-invoice::invoices.invoice', array_merge($data, [
+            'invoice' => $this->invoice,
+        ]));
+    }
 
 	protected function calculateInvoiceAmount(): int
 	{

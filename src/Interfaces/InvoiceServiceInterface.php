@@ -101,4 +101,12 @@ interface InvoiceServiceInterface
      * @return InvoiceService
      */
     public function addCustomField(string $name, string $value): InvoiceService;
+
+    /**
+     * Get the View instance for the invoice.
+     *
+     * @param  array  $data
+     * @return \Illuminate\View\View
+     */
+    public function view(array $data = []): View;
 }

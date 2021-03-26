@@ -41,4 +41,20 @@ return [
 
     'custom_fields' => 4,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Invoice info
+    |--------------------------------------------------------------------------
+    |
+    | Set your Invoice info for the invoice receipt
+    |
+    */
+
+    'info' => [
+        'name' => env('APP_NAME', 'Laravel Invoice'),
+        'address' => 'Laravel Invoice Address',
+        'contact' => 'Phone: +1(234)567-8900 / email: sales@laravel-invoice.test',
+        'url' => env('APP_URL', 'http://laravel-invoice.test'),
+    ],
+
 ];

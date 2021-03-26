@@ -203,4 +203,22 @@ class InvoiceTest extends TestCase
 		$this->assertEquals('Origin', $invoice->custom_fields[0]['name']);
 		$this->assertEquals('Houston', $invoice->custom_fields[0]['value']);
 	}
+
+    /** @test */
+    public function can_render_a_invoice_view()
+    {
+		$this->invoice->addCustomField('Origin', 'Houston');
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addInvoiceLine('Another description', 1, 20000);
+		$this->invoice->addFixedDiscountLine('A Cool Discout', 5000);
+		$this->invoice->addTaxLine('Tax 3%', 3);
+
+		$invoice = $this->invoice->save();
+
+        $view = $this->invoice->view();
+
+        $rendered = $view->render(); // if view cannot be rendered will fail the test
+
+        $this->assertTrue(true);
+    }
 }
