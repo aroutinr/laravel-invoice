@@ -54,6 +54,13 @@ interface InvoiceServiceInterface
     public function addInvoiceLine(string $description, int $quantity, int $amount): InvoiceService;
 
     /**
+     * Add multiple invoice lines type to the invoice.
+     *
+     * @return InvoiceService
+     */
+    public function addMultipleInvoiceLines(array $invoice_lines): InvoiceService;
+
+    /**
      * Add a discount line type to the invoice.
      *
      * @return InvoiceService

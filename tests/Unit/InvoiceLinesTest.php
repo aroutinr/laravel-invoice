@@ -39,6 +39,33 @@ class InvoiceLinesTest extends TestCase
 	}
 
 	/** @test */
+	public function can_add_multiple_invoice_lines_to_the_invoice()
+	{
+		$this->invoice->addMultipleInvoiceLines([
+			[
+				'quantity' => 1, 
+				'amount' => 10000,
+				'description' => 'Some description',
+			],
+			[
+				'quantity' => 1, 
+				'amount' => 20000,
+				'description' => 'Another description'
+			],
+			[
+				'quantity' => 2, 
+				'amount' => 30000,
+				'description' => 'Final description'
+			]
+		]);
+
+		$this->assertEquals('invoice', $this->invoice->lines[0]['line_type']);
+		$this->assertEquals(10000, $this->invoice->lines[0]['amount']);
+		$this->assertEquals('Another description', $this->invoice->lines[1]['description']);
+		$this->assertEquals(2, $this->invoice->lines[2]['quantity']);
+	}
+
+	/** @test */
 	public function can_add_fixed_discount_line_to_the_invoice()
 	{
 		$this->invoice->addFixedDiscountLine('A Cool Discout', 100);

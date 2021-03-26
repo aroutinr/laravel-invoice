@@ -103,6 +103,19 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
+	public function addMultipleInvoiceLines(array $invoice_lines): InvoiceService
+	{
+		foreach ($invoice_lines as $line) {
+			$this->addInvoiceLine(
+				$line['description'], 
+				$line['quantity'], 
+				$line['amount']
+			);
+		}
+
+		return $this;
+	}
+
 	public function addFixedDiscountLine(string $description, int $amount): InvoiceService
 	{
 		if (Arr::exists($this->lines, 'discount')) {
