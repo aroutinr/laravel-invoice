@@ -25,7 +25,7 @@ class InvoiceService implements InvoiceServiceInterface
 		$this->customer = $customer;
 		$this->invoiceable = $invoiceable;
 
-		$this->setCurrency(config('invoice.default_currency'));
+		$this->setCurrency(config('invoice.currency'));
 		$this->setDate(now()->format('Y-m-d'));
 	}
 

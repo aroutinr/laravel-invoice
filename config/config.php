@@ -19,15 +19,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Currency
+    | Currency
     |--------------------------------------------------------------------------
     |
-    | Define the default currency for the package
+    | Define the currency for the package. 
+    | You can change it while making a new invoice.
     | Only 3 characters
     |
     */
 
-    'default_currency' => 'USD',
+    'currency' => 'USD',
 
     /*
     |--------------------------------------------------------------------------
