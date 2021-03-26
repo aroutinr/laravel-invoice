@@ -87,4 +87,11 @@ interface InvoiceServiceInterface
      * @return InvoiceService
      */
     public function addShippingAddress(array $shipping): InvoiceService;
+
+    /**
+     * Add custom fields to the invoice
+     * 
+     * @return InvoiceService
+     */
+    public function addCustomField(string $name, string $value): InvoiceService;
 }

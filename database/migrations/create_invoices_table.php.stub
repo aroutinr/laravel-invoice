@@ -20,6 +20,7 @@ class CreateInvoicesTable extends Migration
             $table->string('number')->nullable();
             $table->bigInteger('amount')->default(0);
             $table->date('date');
+            $table->json('custom_fields')->nullable();
             $table->char('currency', 3)->default(config('invoice.default_currency'));
             $table->text('note')->nullable();
             $table->timestamps();

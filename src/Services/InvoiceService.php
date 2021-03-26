@@ -18,6 +18,7 @@ class InvoiceService implements InvoiceServiceInterface
 	public $lines = array();
 	public $billingAddress;
 	public $shippingAddress;
+	public $customFields = array();
 
 	public function __construct(Model $customer, Model $invoiceable)
 	{
@@ -42,7 +43,8 @@ class InvoiceService implements InvoiceServiceInterface
 			'number' => $this->number,
 			'currency' => $this->currency,
 			'date' => $this->date,
-			'amount' => $this->calculateInvoiceAmount()
+			'amount' => $this->calculateInvoiceAmount(),
+			'custom_fields' => $this->customFields
 		]);
 
 		$invoice->lines()->createMany($this->lines);
@@ -170,6 +172,20 @@ class InvoiceService implements InvoiceServiceInterface
 			'line_1' => $shipping['line_1'],
 			'line_2' => $shipping['line_2'],
 			'line_3' => $shipping['line_3'],
+		];
+
+		return $this;
+	}
+
+	public function addCustomField(string $name, string $value): InvoiceService
+	{
+		if (count($this->customFields) === config('invoice.custom_fields', 4)) {
+			throw new \Exception('You can add a maximum of ' . config('invoice.custom_fields', 4) .' custom fields', 1);
+		}
+
+		$this->customFields[] = [
+			'name' => $name,
+			'value' => $value,
 		];
 
 		return $this;

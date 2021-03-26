@@ -14,6 +14,15 @@ class Invoice extends Model
 	protected $guarded = [];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'custom_fields' => 'array'
+    ];
+
+    /**
      * Invoice constructor.
      * @param array $attributes
      */

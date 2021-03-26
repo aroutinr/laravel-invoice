@@ -29,4 +29,15 @@ return [
 
     'default_currency' => 'USD',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Fields
+    |--------------------------------------------------------------------------
+    |
+    | Define the customs fields that you want to use with your invoice
+    |
+    */
+
+    'custom_fields' => 4,
+
 ];

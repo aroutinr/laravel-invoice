@@ -165,4 +165,42 @@ class InvoiceTest extends TestCase
 		$this->expectExceptionCode(1);
 		$this->expectExceptionMessage('The currency should only be 3 characters long');
 	}
+
+	/** @test */
+	public function add_custom_fields_to_invoice()
+	{
+		$this->invoice->addCustomField('Origin', 'Houston');
+
+		$this->assertEquals('Origin', $this->invoice->customFields[0]['name']);
+		$this->assertEquals('Houston', $this->invoice->customFields[0]['value']);
+	}
+
+	/** @test */
+	public function only_4_custom_fields_allowed()
+	{
+		$this->expectException(\Exception::class);
+
+		$this->invoice->addCustomField('Invoice Terms', 'Due on receipt');
+		$this->invoice->addCustomField('Origin', 'Houston');
+		$this->invoice->addCustomField('Destination', 'Miami');
+		$this->invoice->addCustomField('Service Type', 'Ground');
+		$this->invoice->addCustomField('Carrier', 'UPS');
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('You can add a maximum of 3 custom fields');
+	}
+
+	/** @test */
+	public function custom_fields_are_casted_to_array()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+
+		$this->invoice->addCustomField('Origin', 'Houston');
+
+		$invoice = $this->invoice->save();
+
+		$this->assertEquals('Origin', $invoice->custom_fields[0]['name']);
+		$this->assertEquals('Houston', $invoice->custom_fields[0]['value']);
+	}
 }
