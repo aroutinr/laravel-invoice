@@ -147,4 +147,20 @@ class InvoiceLinesTest extends TestCase
 		$this->assertDatabaseCount('invoice_lines', 1);
 		$this->assertNotTrue($invoice->lines()->first()->percent_based);
 	}
+
+	/** @test */
+	public function can_read_invoice_lines()
+	{
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+		$this->invoice->addPercentDiscountLine('A Cool Discout', 10);
+		$this->invoice->addTaxLine('Tax 3%', 3);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertDatabaseCount('invoices', 1);
+		$this->assertDatabaseCount('invoice_lines', 3);
+		$this->assertEquals('Some description', $invoice->lines->first()->description);
+		$this->assertEquals('A Cool Discout', $invoice->discount->description);
+		$this->assertEquals('Tax 3%', $invoice->tax->description);
+	}
 }

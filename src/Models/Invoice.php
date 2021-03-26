@@ -56,7 +56,26 @@ class Invoice extends Model
      */
     public function lines()
     {
-        return $this->hasMany(InvoiceLine::class);
+        return $this->hasMany(InvoiceLine::class)
+            ->where('line_type', 'invoice');
+    }
+
+    /**
+     * Get the discount line for this invoice
+     */
+    public function discount()
+    {
+        return $this->hasOne(InvoiceLine::class)
+            ->where('line_type', 'discount');
+    }
+
+    /**
+     * Get the tax line for this invoice
+     */
+    public function tax()
+    {
+        return $this->hasOne(InvoiceLine::class)
+            ->where('line_type', 'tax');
     }
 
     /**
