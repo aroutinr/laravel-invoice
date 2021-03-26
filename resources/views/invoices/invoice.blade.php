@@ -231,8 +231,26 @@
 					<tr>
 						<td>{{ $line->description }}</td>
 						<td class="text-center">{{ $line->quantity }}</td>
-						<td class="text-right">{{ $line->amount }}</td>
-						<td class="text-right">{{ $line->quantity * $line->amount }}</td>
+						<td class="text-right">
+							{{ 
+								number_format(
+									$line->amount / 100, 
+									config('invoice.format.decimals', 2), 
+									config('invoice.format.decimal_separator', ','),
+									config('invoice.format.thousand_seperator', '.')
+								) 
+							}}
+						</td>
+						<td class="text-right">
+							{{ 
+								number_format(
+									($line->quantity * $line->amount) / 100, 
+									config('invoice.format.decimals', 2), 
+									config('invoice.format.decimal_separator', ','),
+									config('invoice.format.thousand_seperator', '.')
+								) 
+							}}
+						</td>
 					</tr>
 				@endforeach
 			</tbody>
@@ -257,14 +275,37 @@
 					</th>
 					<th class="text-right">
 						@if ($invoice->discount)
-							- {{ $invoice->discountAmount }}
+							- 
+							{{ 
+								number_format(
+									$invoice->discountAmount / 100, 
+									config('invoice.format.decimals', 2), 
+									config('invoice.format.decimal_separator', ','),
+									config('invoice.format.thousand_seperator', '.')
+								) 
+							}}
 							<br />
 						@endif
 						@if ($invoice->tax)
-							+ {{ $invoice->taxAmount }}
+							+ 
+							{{ 
+								number_format(
+									$invoice->taxAmount / 100, 
+									config('invoice.format.decimals', 2), 
+									config('invoice.format.decimal_separator', ','),
+									config('invoice.format.thousand_seperator', '.')
+								) 
+							}}
 							<br />
 						@endif
-						{{ $invoice->amount }}
+						{{ 
+							number_format(
+								$invoice->amount / 100, 
+								config('invoice.format.decimals', 2), 
+								config('invoice.format.decimal_separator', ','),
+								config('invoice.format.thousand_seperator', '.')
+							) 
+						}}
 					</th>
 				</tr>
 			</tfoot>

@@ -57,4 +57,20 @@ return [
         'url' => env('APP_URL', 'http://laravel-invoice.test'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Invoice format
+    |--------------------------------------------------------------------------
+    |
+    | Define the number format for the invoice 
+    | Decimals quantity, decimal separator and thousand seperator
+    |
+    */
+
+    'format' => [
+        'decimals' => 2,
+        'decimal_separator' => '.',
+        'thousand_seperator' => ',',
+    ],
+
 ];
