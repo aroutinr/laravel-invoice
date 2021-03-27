@@ -13,11 +13,11 @@ class InvoiceServiceProvider extends ServiceProvider
 	{
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'invoice');
 
-        $this->app->bind('invoice', function($app) {
+        $this->app->bind('create-invoice', function($app) {
             return new InvoiceService();
         });
 
-        $this->app->bind('payment', function($app) {
+        $this->app->bind('create-payment', function($app) {
             return new PaymentService();
         });
 	}

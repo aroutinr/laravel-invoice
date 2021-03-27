@@ -2,7 +2,7 @@
 
 namespace AroutinR\Invoice\Tests\Unit;
 
-use AroutinR\Invoice\Facades\Invoice;
+use AroutinR\Invoice\Facades\CreateInvoice;
 use AroutinR\Invoice\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -13,7 +13,7 @@ class InvoiceAddressesTest extends TestCase
 	/** @test */
 	public function can_add_billing_address_to_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->billingAddress([
 				'name' => 'Billing Name',
@@ -32,7 +32,7 @@ class InvoiceAddressesTest extends TestCase
 	/** @test */
 	public function can_add_shipping_address_to_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->shippingAddress([
 				'name' => 'Shipping Name',
@@ -51,7 +51,7 @@ class InvoiceAddressesTest extends TestCase
 	/** @test */
 	public function can_save_invoice_with_billing_and_shipping_address()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->billingAddress([
 				'name' => 'Billing Name',

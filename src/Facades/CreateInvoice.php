@@ -4,10 +4,10 @@ namespace AroutinR\Invoice\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Payment extends Facade
+class CreateInvoice extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'payment';
+        return 'create-invoice';
     }
 }

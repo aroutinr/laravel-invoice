@@ -2,7 +2,7 @@
 
 namespace AroutinR\Invoice\Tests\Unit;
 
-use AroutinR\Invoice\Facades\Invoice;
+use AroutinR\Invoice\Facades\CreateInvoice;
 use AroutinR\Invoice\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -13,7 +13,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_add_invoice_line_to_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000);
 
 		$this->assertEquals('invoice', $invoice->lines[0]['line_type']);
@@ -25,7 +25,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_add_multiple_invoice_lines_to_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLines([
 				[
 					'quantity' => 1, 
@@ -53,7 +53,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_add_fixed_discount_line_to_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->fixedDiscountLine('A Cool Discout', 100);
 
 		$this->assertEquals('discount', $invoice->lines['discount']['line_type']);
@@ -64,7 +64,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_add_percent_based_discount_line_to_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->percentDiscountLine('A Cool Discout', 10);
 
 		$this->assertEquals('discount', $invoice->lines['discount']['line_type']);
@@ -76,14 +76,14 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function only_one_discount_line_can_be_added()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->percentDiscountLine('A Cool Discout', 10);
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
 		$this->expectExceptionMessage('Only one discount line can be added');
 
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->fixedDiscountLine('Another Cool Discout', 1000);
 
 		$this->assertEquals('discount', $lines['discount']['line_type']);
@@ -95,7 +95,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_add_tax_line_to_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->taxLine('Tax 3%', 3);
 
 		$this->assertEquals('tax', $invoice->lines['tax']['line_type']);
@@ -107,14 +107,14 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function only_one_tax_line_can_be_added()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->taxLine('Tax 3%', 3);
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
 		$this->expectExceptionMessage('Only one tax line can be added');
 
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->taxLine('Tax 7%', 7);
 
 		$this->assertEquals('tax', $invoice->lines['tax']['line_type']);
@@ -126,7 +126,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_add_invoice_line_to_the_invoice_and_create_the_invoice()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->save();
 
@@ -143,7 +143,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_read_invoice_lines()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->percentDiscountLine('A Cool Discout', 10)
 			->taxLine('Tax 3%', 3)
@@ -159,7 +159,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_read_invoice_lines_amount()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 10000)
 			->percentDiscountLine('A Cool Discout', 10)
@@ -175,7 +175,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function test_invoice_custom_attributes()
 	{
-		$invoice = Invoice::for($this->customer, $this->invoiceable)
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)
 			->fixedDiscountLine('A Cool Discout', 5000)

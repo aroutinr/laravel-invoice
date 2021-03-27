@@ -25,8 +25,8 @@
                 "AroutinR\\Invoice\\InvoiceServiceProvider"
             ],
             "aliases": {
-                "Invoice": "AroutinR\\Invoice\\Facades\\Invoice",
-                "Payment": "AroutinR\\Invoice\\Facades\\Payment"
+                "CreateInvoice": "AroutinR\\Invoice\\Facades\\CreateInvoice",
+                "CreatePayment": "AroutinR\\Invoice\\Facades\\CreatePayment"
             }
         }
     },

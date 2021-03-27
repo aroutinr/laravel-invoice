@@ -2,7 +2,7 @@
 
 namespace AroutinR\Invoice\Tests\Unit;
 
-use AroutinR\Invoice\Facades\Invoice;
+use AroutinR\Invoice\Facades\CreateInvoice;
 use AroutinR\Invoice\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,7 +14,7 @@ class TraitsTest extends TestCase
     {
         parent::setUp();
 
-        Invoice::for($this->customer, $this->invoiceable)
+        CreateInvoice::for($this->customer, $this->invoiceable)
             ->invoiceLine('Some description', 1, 10000)
             ->billingAddress([
                 'name' => 'Billing Name',
