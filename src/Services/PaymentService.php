@@ -17,11 +17,16 @@ class PaymentService implements PaymentServiceInterface
 	public $method;
 	public $reference;
 
-	public function __construct(Invoice $invoice)
+	public function __construct()
+	{
+		$this->paymentDate(now()->format('Y-m-d'));
+	}
+
+	public function for(Invoice $invoice): PaymentService
 	{
 		$this->invoice = $invoice;
 
-		$this->setDate(now()->format('Y-m-d'));
+		return $this;
 	}
 
 	public function save(): Payment
@@ -41,35 +46,35 @@ class PaymentService implements PaymentServiceInterface
 		return $this->payment;
 	}
 
-	public function setDate(string $date): PaymentService
+	public function paymentDate(string $date): PaymentService
 	{
 		$this->date = $date;
 
 		return $this;
 	}
 
-	public function setAmount(int $amount): PaymentService
+	public function paymentAmount(int $amount): PaymentService
 	{
 		$this->amount = $amount;
 
 		return $this;
 	}
 
-	public function setNumber(string $number): PaymentService
+	public function paymentNumber(string $number): PaymentService
 	{
 		$this->number = $number;
 
 		return $this;
 	}
 
-	public function setMethod(string $method): PaymentService
+	public function paymentMethod(string $method): PaymentService
 	{
 		$this->method = $method;
 
 		return $this;
 	}
 
-	public function setReference(string $reference): PaymentService
+	public function paymentReference(string $reference): PaymentService
 	{
 		$this->reference = $reference;
 
@@ -81,5 +86,12 @@ class PaymentService implements PaymentServiceInterface
         return View::make('laravel-invoice::payments.payment', array_merge($data, [
             'payment' => $this->payment,
         ]));
+    }
+
+    public function saveAndView(array $data = []): \Illuminate\Contracts\View\View
+    {
+    	$this->save();
+    	
+    	return $this->view();
     }
 }

@@ -2,9 +2,7 @@
 
 namespace AroutinR\Invoice\Tests\Unit;
 
-use AroutinR\Invoice\Services\InvoiceService;
-use AroutinR\Invoice\Tests\Models\Service;
-use AroutinR\Invoice\Tests\Models\User;
+use AroutinR\Invoice\Facades\Invoice;
 use AroutinR\Invoice\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -12,27 +10,13 @@ class InvoiceTest extends TestCase
 {
 	use RefreshDatabase;
 
-    protected $customer;
-    protected $invoiceable;
-    protected $invoice;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->customer = factory(User::class)->create();
-
-        $this->invoiceable = factory(Service::class)->create();
-
-        $this->invoice = new InvoiceService($this->customer, $this->invoiceable);
-    }
-
 	/** @test */
-	public function invoice_need_at_leas_on_invoice_line_to_be_created()
+	public function invoice_need_at_least_one_invoice_line_to_be_created()
 	{
 		$this->expectException(\Exception::class);
 
-		$this->invoice->save();
+		Invoice::for($this->customer, $this->invoiceable)
+			->save();
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
@@ -44,10 +28,10 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function calculate_invoice_amount()
 	{
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice->addInvoiceLine('Another description', 1, 20000);
-
-		$invoice = $this->invoice->save();
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceLine('Another description', 1, 20000)
+			->save();
 
 		$this->assertSame(30000, $invoice->amount);
 	}
@@ -55,11 +39,11 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function calculate_invoice_amount_with_fixed_discount()
 	{
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice->addInvoiceLine('Another description', 1, 20000);
-		$this->invoice->addFixedDiscountLine('A Cool Discout', 5000);
-
-		$invoice = $this->invoice->save();
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceLine('Another description', 1, 20000)
+			->fixedDiscountLine('A Cool Discout', 5000)
+			->save();
 
 		$this->assertSame(25000, $invoice->amount);
 	}
@@ -67,11 +51,11 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function calculate_invoice_amount_with_percent_discount()
 	{
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice->addInvoiceLine('Another description', 1, 20000);
-		$this->invoice->addPercentDiscountLine('A Cool Discout', 10);
-
-		$invoice = $this->invoice->save();
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceLine('Another description', 1, 20000)
+			->percentDiscountLine('A Cool Discout', 10)
+			->save();
 
 		$this->assertSame(27000, $invoice->amount);
 	}
@@ -79,11 +63,11 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function calculate_invoice_amount_with_tax()
 	{
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice->addInvoiceLine('Another description', 1, 20000);
-		$this->invoice->addTaxLine('Tax 3%', 3);
-
-		$invoice = $this->invoice->save();
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceLine('Another description', 1, 20000)
+			->taxLine('Tax 3%', 3)
+			->save();
 
 		$this->assertSame(30900, $invoice->amount);
 	}
@@ -91,12 +75,12 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function calculate_invoice_amount_with_fixed_discount_and_tax()
 	{
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice->addInvoiceLine('Another description', 1, 20000);
-		$this->invoice->addFixedDiscountLine('A Cool Discout', 5000);
-		$this->invoice->addTaxLine('Tax 3%', 3);
-
-		$invoice = $this->invoice->save();
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceLine('Another description', 1, 20000)
+			->fixedDiscountLine('A Cool Discout', 5000)
+			->taxLine('Tax 3%', 3)
+			->save();
 
 		$this->assertSame(25750, $invoice->amount);
 	}
@@ -104,12 +88,12 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function calculate_invoice_amount_with_percent_discount_and_tax()
 	{
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice->addInvoiceLine('Another description', 1, 20000);
-		$this->invoice->addPercentDiscountLine('A Cool Discout', 10);
-		$this->invoice->addTaxLine('Tax 3%', 3);
-
-		$invoice = $this->invoice->save();
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceLine('Another description', 1, 20000)
+			->percentDiscountLine('A Cool Discout', 10)
+			->taxLine('Tax 3%', 3)
+			->save();
 
 		$this->assertSame(27810, $invoice->amount);
 	}
@@ -117,34 +101,28 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function can_set_invoice_number()
 	{
-		$this->invoice->setNumber('INVOICE-1234');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceNumber('INVOICE-1234');
 
-		$this->assertEquals('INVOICE-1234', $this->invoice->number);
+		$this->assertEquals('INVOICE-1234', $invoice->number);
 	}
 
 	/** @test */
 	public function currency_can_be_changed()
 	{
-		$this->invoice->setCurrency('EUR');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceCurrency('EUR');
 
-		$this->assertEquals('EUR', $this->invoice->currency);
+		$this->assertEquals('EUR', $invoice->currency);
 	}
 
 	/** @test */
 	public function date_can_be_changed()
 	{
-		$this->invoice->setDate('2021-03-01');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceDate('2021-03-01');
 
-		$this->assertEquals('2021-03-01', $this->invoice->date);
-	}
-
-	/** @test */
-	public function currency_and_date_can_be_changed_in_once()
-	{
-		$this->invoice->setCurrency('EUR')->setDate('2021-03-01');
-
-		$this->assertEquals('EUR', $this->invoice->currency);
-		$this->assertEquals('2021-03-01', $this->invoice->date);
+		$this->assertEquals('2021-03-01', $invoice->date);
 	}
 
 	/** @test */
@@ -152,13 +130,16 @@ class InvoiceTest extends TestCase
 	{
 		$this->expectException(\Exception::class);
 
-		$this->invoice->setCurrency('USDS');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceCurrency('USDS');
 		$this->assertDontSeeText('USDS', $this->invoice->currency);
 
-		$this->invoice->setCurrency('US');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceCurrency('US');
 		$this->assertDontSeeText('US', $this->invoice->currency);
 
-		$this->invoice->setCurrency('$');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceCurrency('$');
 		$this->assertDontSeeText('$', $this->invoice->currency);
 
 		$this->expectException('Exception');
@@ -169,10 +150,11 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function add_custom_fields_to_invoice()
 	{
-		$this->invoice->addCustomField('Origin', 'Houston');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->customField('Origin', 'Houston');
 
-		$this->assertEquals('Origin', $this->invoice->customFields[0]['name']);
-		$this->assertEquals('Houston', $this->invoice->customFields[0]['value']);
+		$this->assertEquals('Origin', $invoice->customFields[0]['name']);
+		$this->assertEquals('Houston', $invoice->customFields[0]['value']);
 	}
 
 	/** @test */
@@ -180,11 +162,12 @@ class InvoiceTest extends TestCase
 	{
 		$this->expectException(\Exception::class);
 
-		$this->invoice->addCustomField('Invoice Terms', 'Due on receipt');
-		$this->invoice->addCustomField('Origin', 'Houston');
-		$this->invoice->addCustomField('Destination', 'Miami');
-		$this->invoice->addCustomField('Service Type', 'Ground');
-		$this->invoice->addCustomField('Carrier', 'UPS');
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->customField('Invoice Terms', 'Due on receipt')
+			->customField('Origin', 'Houston')
+			->customField('Destination', 'Miami')
+			->customField('Service Type', 'Ground')
+			->customField('Carrier', 'UPS');
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
@@ -194,11 +177,10 @@ class InvoiceTest extends TestCase
 	/** @test */
 	public function custom_fields_are_casted_to_array()
 	{
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-
-		$this->invoice->addCustomField('Origin', 'Houston');
-
-		$invoice = $this->invoice->save();
+		$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->customField('Origin', 'Houston')
+			->save();
 
 		$this->assertEquals('Origin', $invoice->custom_fields[0]['name']);
 		$this->assertEquals('Houston', $invoice->custom_fields[0]['value']);
@@ -207,17 +189,14 @@ class InvoiceTest extends TestCase
     /** @test */
     public function can_render_a_invoice_view()
     {
-		$this->invoice->addCustomField('Origin', 'Houston');
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice->addInvoiceLine('Another description', 1, 20000);
-		$this->invoice->addFixedDiscountLine('A Cool Discout', 5000);
-		$this->invoice->addTaxLine('Tax 3%', 3);
-
-		$invoice = $this->invoice->save();
-
-        $view = $this->invoice->view();
-
-        $rendered = $view->render(); // if view cannot be rendered will fail the test
+    	$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->customField('Origin', 'Houston')
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceLine('Another description', 1, 20000)
+			->fixedDiscountLine('A Cool Discout', 5000)
+			->taxLine('Tax 3%', 3)
+			->saveAndView()
+			->render(); // if view cannot be rendered will fail the test
 
         $this->assertTrue(true);
     }
@@ -225,9 +204,9 @@ class InvoiceTest extends TestCase
     /** @test */
     public function test_invoice_balance_attribute()
     {
-		$this->invoice->addInvoiceLine('Some description', 1, 10000);
-
-		$invoice = $this->invoice->save();
+    	$invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
 
 		$this->assertSame(10000, $invoice->balance);
     }

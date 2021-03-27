@@ -22,13 +22,18 @@ class InvoiceService implements InvoiceServiceInterface
 	public $shippingAddress;
 	public $customFields = array();
 
-	public function __construct(Model $customer, Model $invoiceable)
+	public function __construct()
+	{
+		$this->invoiceCurrency(config('invoice.currency'));
+		$this->invoiceDate(now()->format('Y-m-d'));
+	}
+
+	public function for(Model $customer, Model $invoiceable): InvoiceService
 	{
 		$this->customer = $customer;
 		$this->invoiceable = $invoiceable;
 
-		$this->setCurrency(config('invoice.currency'));
-		$this->setDate(now()->format('Y-m-d'));
+		return $this;
 	}
 
 	public function save(): Invoice
@@ -68,14 +73,14 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this->invoice;
 	}
 
-	public function setNumber(string $number): InvoiceService
+	public function invoiceNumber(string $number): InvoiceService
 	{
 		$this->number = $number;
 
 		return $this;
 	}
 
-	public function setCurrency(string $currency): InvoiceService
+	public function invoiceCurrency(string $currency): InvoiceService
 	{
 		if (Str::length($currency) === 3) {
 			$this->currency = $currency;
@@ -86,14 +91,14 @@ class InvoiceService implements InvoiceServiceInterface
 		throw new \Exception('The currency should only be 3 characters long', 1);
 	}
 
-	public function setDate(string $date): InvoiceService
+	public function invoiceDate(string $date): InvoiceService
 	{
 		$this->date = $date;
 
 		return $this;
 	}
 
-	public function addInvoiceLine(string $description, int $quantity, int $amount): InvoiceService
+	public function invoiceLine(string $description, int $quantity, int $amount): InvoiceService
 	{
 		$this->lines[] = [
 			'line_type' => 'invoice',
@@ -105,10 +110,10 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addInvoiceLines(array $invoice_lines): InvoiceService
+	public function invoiceLines(array $invoice_lines): InvoiceService
 	{
 		foreach ($invoice_lines as $line) {
-			$this->addInvoiceLine(
+			$this->invoiceLine(
 				$line['description'], 
 				$line['quantity'], 
 				$line['amount']
@@ -118,7 +123,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addFixedDiscountLine(string $description, int $amount): InvoiceService
+	public function fixedDiscountLine(string $description, int $amount): InvoiceService
 	{
 		if (Arr::exists($this->lines, 'discount')) {
 			throw new \Exception('Only one discount line can be added', 1);
@@ -134,7 +139,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addPercentDiscountLine(string $description, int $amount): InvoiceService
+	public function percentDiscountLine(string $description, int $amount): InvoiceService
 	{
 		if (Arr::exists($this->lines, 'discount')) {
 			throw new \Exception('Only one discount line can be added', 1);
@@ -150,7 +155,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addTaxLine(string $description, int $amount): InvoiceService
+	public function taxLine(string $description, int $amount): InvoiceService
 	{
 		if (Arr::exists($this->lines, 'tax')) {
 			throw new \Exception('Only one tax line can be added', 1);
@@ -166,7 +171,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addBillingAddress(array $billing): InvoiceService
+	public function billingAddress(array $billing): InvoiceService
 	{
 		$this->billingAddress = [
 			'address_type' => 'billing',
@@ -179,7 +184,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addShippingAddress(array $shipping): InvoiceService
+	public function shippingAddress(array $shipping): InvoiceService
 	{
 		$this->shippingAddress = [
 			'address_type' => 'shipping',
@@ -192,7 +197,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addCustomField(string $name, string $value): InvoiceService
+	public function customField(string $name, string $value): InvoiceService
 	{
 		if (count($this->customFields) === config('invoice.custom_fields', 4)) {
 			throw new \Exception('You can add a maximum of ' . config('invoice.custom_fields', 4) .' custom fields', 1);
@@ -211,6 +216,13 @@ class InvoiceService implements InvoiceServiceInterface
         return View::make('laravel-invoice::invoices.invoice', array_merge($data, [
             'invoice' => $this->invoice,
         ]));
+    }
+
+    public function saveAndView(array $data = []): \Illuminate\Contracts\View\View
+    {
+    	$this->save();
+    	
+    	return $this->view();
     }
 
 	protected function calculateInvoiceAmount(): int

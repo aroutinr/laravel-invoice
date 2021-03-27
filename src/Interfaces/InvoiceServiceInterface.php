@@ -10,13 +10,20 @@ use Illuminate\Support\Collection;
 interface InvoiceServiceInterface
 {
     /**
-     * Generate invoice referencing Eloquent model.
+     * Construct the InvoiceService class
+     *
+     * @return void
+     */
+    public function __construct();
+
+    /**
+     * Setup the InvoiceService with the Eloquent models.
      *
      * @param Model $customer        Eloquent model.
      * @param Model $invoiceable     Eloquent model.
      * @return InvoiceServiceInterface
      */
-    public function __construct(Model $customer, Model $invoiceable);
+    public function for(Model $customer, Model $invoiceable): InvoiceService;
 
     /**
      * Save the invoice to the database.
@@ -30,77 +37,77 @@ interface InvoiceServiceInterface
      *
      * @return InvoiceService
      */
-    public function setNumber(string $number): InvoiceService;
+    public function invoiceNumber(string $number): InvoiceService;
 
     /**
      * Set the currency for the invoice.
      *
      * @return InvoiceService
      */
-    public function setCurrency(string $currency): InvoiceService;
+    public function invoiceCurrency(string $currency): InvoiceService;
 
     /**
      * Set the date for the invoice.
      *
      * @return InvoiceService
      */
-    public function setDate(string $date): InvoiceService;
+    public function invoiceDate(string $date): InvoiceService;
 
     /**
      * Add a invoice line type to the invoice.
      *
      * @return InvoiceService
      */
-    public function addInvoiceLine(string $description, int $quantity, int $amount): InvoiceService;
+    public function invoiceLine(string $description, int $quantity, int $amount): InvoiceService;
 
     /**
      * Add multiple invoice lines type to the invoice.
      *
      * @return InvoiceService
      */
-    public function addInvoiceLines(array $invoice_lines): InvoiceService;
+    public function invoiceLines(array $invoice_lines): InvoiceService;
 
     /**
      * Add a discount line type to the invoice.
      *
      * @return InvoiceService
      */
-    public function addFixedDiscountLine(string $description, int $amount): InvoiceService;
+    public function fixedDiscountLine(string $description, int $amount): InvoiceService;
 
     /**
      * Add a discount line type to the invoice.
      *
      * @return InvoiceService
      */
-    public function addPercentDiscountLine(string $description, int $amount): InvoiceService;
+    public function percentDiscountLine(string $description, int $amount): InvoiceService;
 
     /**
      * Add a tax line type to the invoice.
      *
      * @return InvoiceService
      */
-    public function addTaxLine(string $description, int $amount): InvoiceService;
+    public function taxLine(string $description, int $amount): InvoiceService;
 
     /**
      * Add billing address to the invoice
      * 
      * @return InvoiceService
      */
-    public function addBillingAddress(array $billing): InvoiceService;
+    public function billingAddress(array $billing): InvoiceService;
 
     /**
      * Add shipping address to the invoice
      * 
      * @return InvoiceService
      */
-    public function addShippingAddress(array $shipping): InvoiceService;
+    public function shippingAddress(array $shipping): InvoiceService;
 
     /**
      * Add custom fields to the invoice
      * 
      * @return InvoiceService
      */
-    public function addCustomField(string $name, string $value): InvoiceService;
+    public function customField(string $name, string $value): InvoiceService;
 
     /**
      * Get the View instance for the invoice.
@@ -109,4 +116,11 @@ interface InvoiceServiceInterface
      * @return \Illuminate\View\View
      */
     public function view(array $data = []): View;
+
+    /**
+     * Save the invoice to the database and get the View instance for the invoice.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function saveAndView(): View;
 }

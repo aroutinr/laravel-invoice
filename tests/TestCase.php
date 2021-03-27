@@ -3,14 +3,22 @@
 namespace AroutinR\Invoice\Tests;
 
 use AroutinR\Invoice\InvoiceServiceProvider;
+use AroutinR\Invoice\Tests\Models\Service;
+use AroutinR\Invoice\Tests\Models\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    public $customer;
+    public $invoiceable;
+
 	public function setUp(): void
 	{
 		parent::setUp();
 		
 		$this->withFactories(__DIR__.'/Database/factories');
+
+        $this->customer = factory(User::class)->create();
+        $this->invoiceable = factory(Service::class)->create();
 	}
 
 	protected function getPackageProviders($app)

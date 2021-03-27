@@ -23,7 +23,11 @@
         "laravel": {
             "providers": [
                 "AroutinR\\Invoice\\InvoiceServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Invoice": "AroutinR\\Invoice\\Facades\\Invoice",
+                "Payment": "AroutinR\\Invoice\\Facades\\Payment",
+            }
         }
     },
     "require-dev": {

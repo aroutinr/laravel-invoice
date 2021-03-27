@@ -4,6 +4,7 @@ namespace AroutinR\Invoice;
 
 use AroutinR\Invoice\Interfaces\InvoiceServiceInterface;
 use AroutinR\Invoice\Services\InvoiceService;
+use AroutinR\Invoice\Services\PaymentService;
 use Illuminate\Support\ServiceProvider;
 
 class InvoiceServiceProvider extends ServiceProvider
@@ -11,14 +12,18 @@ class InvoiceServiceProvider extends ServiceProvider
 	public function register()
 	{
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'invoice');
+
+        $this->app->bind('invoice', function($app) {
+            return new InvoiceService();
+        });
+
+        $this->app->bind('payment', function($app) {
+            return new PaymentService();
+        });
 	}
 
 	public function boot()
 	{
-        $this->app->bind(InvoiceServiceInterface::class, function ($app) {
-            return new InvoiceService();
-        });
-
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-invoice');
 
         if ($this->app->runningInConsole()) {

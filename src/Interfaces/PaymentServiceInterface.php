@@ -9,47 +9,54 @@ use Illuminate\Contracts\View\View;
 interface PaymentServiceInterface
 {
     /**
-     * Generate payment referencing Eloquent model.
+     * Construct the PaymentService class
+     *
+     * @return void
+     */
+    public function __construct();
+
+    /**
+     * Setup the PaymentService with the Eloquent models.
      *
      * @param Invoice $invoice Eloquent model.
-     * @return PaymentServiceInterface
+     * @return PaymentService
      */
-    public function __construct(Invoice $invoice);
+    public function for(Invoice $invoice): PaymentService;
 
     /**
      * Set the date for the payment.
      *
      * @return PaymentService
      */
-    public function setDate(string $date): PaymentService;
+    public function paymentDate(string $date): PaymentService;
 
     /**
      * Set the amount for the payment.
      *
      * @return PaymentService
      */
-    public function setAmount(int $amout): PaymentService;
+    public function paymentAmount(int $amout): PaymentService;
 
     /**
      * Set the number for the payment.
      *
      * @return PaymentService
      */
-    public function setNumber(string $number): PaymentService;
+    public function paymentNumber(string $number): PaymentService;
 
     /**
      * Set the method for the payment.
      *
      * @return PaymentService
      */
-    public function setMethod(string $method): PaymentService;
+    public function paymentMethod(string $method): PaymentService;
 
     /**
      * Set the reference for the payment.
      *
      * @return PaymentService
      */
-    public function setReference(string $reference): PaymentService;
+    public function paymentReference(string $reference): PaymentService;
 
     /**
      * Save the payment to the database.
@@ -65,4 +72,11 @@ interface PaymentServiceInterface
      * @return \Illuminate\View\View
      */
     public function view(array $data = []): View;
+
+    /**
+     * Save the payment to the database and get the View instance for the payment.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function saveAndView(): View;
 }

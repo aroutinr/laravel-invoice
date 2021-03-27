@@ -2,10 +2,8 @@
 
 namespace AroutinR\Invoice\Tests\Unit;
 
-use AroutinR\Invoice\Services\InvoiceService;
-use AroutinR\Invoice\Services\PaymentService;
-use AroutinR\Invoice\Tests\Models\Service;
-use AroutinR\Invoice\Tests\Models\User;
+use AroutinR\Invoice\Facades\Invoice;
+use AroutinR\Invoice\Facades\Payment;
 use AroutinR\Invoice\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -13,53 +11,41 @@ class PaymentTest extends TestCase
 {
 	use RefreshDatabase;
 
-    protected $invoice;
-    protected $payment;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $customer = factory(User::class)->create();
-
-        $invoiceable = factory(Service::class)->create();
-
-        $invoice = new InvoiceService($customer, $invoiceable);
-		$invoice->addInvoiceLine('Some description', 1, 10000);
-		$this->invoice = $invoice->save();
-
-		$this->payment = new PaymentService($this->invoice);
-    }
-
 	/** @test */
 	public function can_create_a_payment()
 	{
-		$this->payment->setAmount(10000);
+        $invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
 
-		$payment = $this->payment->save();
+		$payment = Payment::for($invoice)
+			->paymentAmount(10000)
+			->save();
 
 		$this->assertDatabaseCount('payments', 1);
-		$this->assertSame($this->invoice->id, $payment->invoice_id);
+		$this->assertSame($invoice->id, $payment->invoice_id);
 	}
 
 	/** @test */
 	public function can_create_multiple_payments()
 	{
-		$this->payment->setAmount(5000);
+        $invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
 
-		$payment = $this->payment->save();
+		Payment::for($invoice)
+			->paymentAmount(5000)
+			->save();
 
 		$this->assertDatabaseCount('payments', 1);
-		$this->assertSame(5000, $this->invoice->balance);
+		$this->assertSame(5000, $invoice->balance);
 
-		$anotherPayment = new PaymentService($this->invoice);
-
-		$anotherPayment->setAmount(5000);
-
-		$payment = $anotherPayment->save();
+		Payment::for($invoice)
+			->paymentAmount(5000)
+			->save();
 
 		$this->assertDatabaseCount('payments', 2);
-		$this->assertSame(0, $this->invoice->balance);
+		$this->assertSame(0, $invoice->balance);
 	}
 
 	/** @test */
@@ -67,9 +53,13 @@ class PaymentTest extends TestCase
 	{
 		$this->expectException(\Exception::class);
 
-		$this->payment->setAmount(20000);
+        $invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
 
-		$this->payment->save();
+		Payment::for($invoice)
+			->paymentAmount(20000)
+			->save();
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
@@ -81,25 +71,31 @@ class PaymentTest extends TestCase
 	/** @test */
 	public function payment_amount_can_be_less_than_the_invoice_amount()
 	{
-		$payment = new PaymentService($this->invoice);
+        $invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
 
-		$this->payment->setAmount(3000);
-
-		$this->payment->save();
+		Payment::for($invoice)
+			->paymentAmount(3000)
+			->save();
 
 		$this->assertDatabaseCount('payments', 1);
-		$this->assertSame(7000, $this->invoice->balance);
+		$this->assertSame(7000, $invoice->balance);
 	}
 
 	/** @test */
 	public function can_create_a_payment_with_all_data()
 	{
-		$this->payment->setAmount(10000);
-		$this->payment->setNumber('PAYMENT-123');
-		$this->payment->setMethod('Check');
-		$this->payment->setReference('Check # 001122');
+        $invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
 
-		$payment = $this->payment->save();
+		$payment = Payment::for($invoice)
+			->paymentAmount(10000)
+			->paymentNumber('PAYMENT-123')
+			->paymentMethod('Check')
+			->paymentReference('Check # 001122')
+			->save();
 
 		$this->assertDatabaseCount('payments', 1);
 		$this->assertSame(10000, $payment->amount);
@@ -111,16 +107,17 @@ class PaymentTest extends TestCase
     /** @test */
     public function can_render_a_payment_view()
     {
-		$this->payment->setAmount(10000);
-		$this->payment->setNumber('PAYMENT-123');
-		$this->payment->setMethod('Check');
-		$this->payment->setReference('Check # 001122');
+        $invoice = Invoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
 
-		$payment = $this->payment->save();
-
-        $view = $this->payment->view();
-
-        $rendered = $view->render(); // if view cannot be rendered will fail the test
+		$payment = Payment::for($invoice)
+			->paymentAmount(10000)
+			->paymentNumber('PAYMENT-123')
+			->paymentMethod('Check')
+			->paymentReference('Check # 001122')
+			->saveAndView()
+			->render(); // if view cannot be rendered will fail the test
 
         $this->assertTrue(true);
     }
