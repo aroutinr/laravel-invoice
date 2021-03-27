@@ -41,7 +41,7 @@ class InvoiceLinesTest extends TestCase
 	/** @test */
 	public function can_add_multiple_invoice_lines_to_the_invoice()
 	{
-		$this->invoice->addMultipleInvoiceLines([
+		$this->invoice->addInvoiceLines([
 			[
 				'quantity' => 1, 
 				'amount' => 10000,

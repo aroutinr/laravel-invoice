@@ -105,7 +105,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function addMultipleInvoiceLines(array $invoice_lines): InvoiceService
+	public function addInvoiceLines(array $invoice_lines): InvoiceService
 	{
 		foreach ($invoice_lines as $line) {
 			$this->addInvoiceLine(
