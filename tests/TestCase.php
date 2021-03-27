@@ -32,5 +32,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 		(new \CreateInvoiceLinesTable)->up();
 		include_once __DIR__ . '/../database/migrations/create_invoice_addresses_table.php.stub';
 		(new \CreateInvoiceAddressesTable)->up();
+		include_once __DIR__ . '/../database/migrations/create_payments_table.php.stub';
+		(new \CreatePaymentsTable)->up();
 	}
 }

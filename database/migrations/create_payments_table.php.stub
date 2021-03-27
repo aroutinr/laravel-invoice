@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatePaymentsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create(config('invoice.table_names.payments'), function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('invoice_id')->constrained(config('invoice.table_names.invoices'));
+            $table->date('date');
+            $table->bigInteger('amount')->default(0);
+            $table->string('number')->nullable();
+            $table->string('method')->nullable();
+            $table->string('reference')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists(config('invoice.table_names.payments'));
+    }
+}

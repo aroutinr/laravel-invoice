@@ -44,6 +44,12 @@ class InvoiceServiceProvider extends ServiceProvider
                 ], 'migrations');
             }
 
+            if (! class_exists('CreatePaymentsTable')) {
+                $this->publishes([
+                    __DIR__ . '/../database/migrations/create_payments_table.php.stub' => database_path('migrations/2021_03_24_173620_create_payments_table.php'),
+                ], 'migrations');
+            }
+
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-invoice'),
             ], 'views');

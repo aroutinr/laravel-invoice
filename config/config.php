@@ -15,6 +15,7 @@ return [
         'invoices' => 'invoices',
         'invoice_lines' => 'invoice_lines',
         'invoice_addresses' => 'invoice_addresses',
+        'payments' => 'payments',
     ],
 
     /*
@@ -73,4 +74,16 @@ return [
         'thousand_seperator' => ',',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Payment methods
+    |--------------------------------------------------------------------------
+    |
+    | Define the payment methods for your invoices
+    |
+    */
+
+    'payment_methods' => [
+        'Cash', 'Check', 'Transfer'
+    ],
 ];

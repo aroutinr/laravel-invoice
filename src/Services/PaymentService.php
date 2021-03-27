@@ -1,0 +1,77 @@
+<?php
+
+namespace AroutinR\Invoice\Services;
+
+use AroutinR\Invoice\Interfaces\PaymentServiceInterface;
+use AroutinR\Invoice\Models\Invoice;
+use AroutinR\Invoice\Models\Payment;
+
+class PaymentService implements PaymentServiceInterface
+{
+	public $invoice;
+	public $payment;
+	public $date;
+	public $amount;
+	public $number;
+	public $method;
+	public $reference;
+
+	public function __construct(Invoice $invoice)
+	{
+		$this->invoice = $invoice;
+
+		$this->setDate(now()->format('Y-m-d'));
+	}
+
+	public function save(): Payment
+	{
+		if ($this->amount > $this->invoice->balance) {
+			throw new \Exception("The payment amount cannot be higher than the invoice amount", 1);
+		}
+
+		$this->payment = $this->invoice->payments()->create([
+			'date' => $this->date,
+			'amount' => $this->amount,
+			'number' => $this->number,
+			'method' => $this->method,
+			'reference' => $this->reference,
+		]);
+
+		return $this->payment;
+	}
+
+	public function setDate(string $date): PaymentService
+	{
+		$this->date = $date;
+
+		return $this;
+	}
+
+	public function setAmount(int $amount): PaymentService
+	{
+		$this->amount = $amount;
+
+		return $this;
+	}
+
+	public function setNumber(string $number): PaymentService
+	{
+		$this->number = $number;
+
+		return $this;
+	}
+
+	public function setMethod(string $method): PaymentService
+	{
+		$this->method = $method;
+
+		return $this;
+	}
+
+	public function setReference(string $reference): PaymentService
+	{
+		$this->reference = $reference;
+
+		return $this;
+	}
+}

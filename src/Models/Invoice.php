@@ -52,6 +52,14 @@ class Invoice extends Model
     }
 
     /**
+     * Get the payments related to this invoice
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
      * Get the invoice lines for this invoice
      */
     public function lines()
