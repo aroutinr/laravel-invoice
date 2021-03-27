@@ -27,6 +27,21 @@ class PaymentTest extends TestCase
 	}
 
 	/** @test */
+	public function payment_needs_a_invoice_model()
+	{
+		$this->expectException(\Exception::class);
+
+		CreatePayment::paymentAmount(10000)
+			->save();
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('You must add a Invoice model');
+
+		$this->assertDatabaseCount('payments', 0);
+	}
+
+	/** @test */
 	public function can_create_multiple_payments()
 	{
         $invoice = CreateInvoice::for($this->customer, $this->invoiceable)

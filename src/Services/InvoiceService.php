@@ -38,6 +38,10 @@ class InvoiceService implements InvoiceServiceInterface
 
 	public function save(): Invoice
 	{
+		if (!$this->customer || !$this->invoiceable) {
+			throw new \Exception('You must add a Customer and Invoiceable model', 1);
+		}
+
 		if (!in_array('invoice', Arr::flatten($this->lines))) {
 			throw new \Exception('You must add at least one invoice line to the invoice', 1);
 		}

@@ -11,6 +11,33 @@ class InvoiceTest extends TestCase
 	use RefreshDatabase;
 
 	/** @test */
+	public function invoice_needs_a_customer_and_invoiceable_model()
+	{
+		$this->expectException(\Exception::class);
+
+		CreateInvoice::invoiceLine('Some description', 1, 10000)
+			->save();
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('You must add a Customer and Invoiceable model');
+
+		$this->assertDatabaseCount('invoices', 0);
+	}
+
+	/** @test */
+	public function invoice_customer_and_invoiceable_has_to_be_model_instances()
+	{
+		$this->expectException('TypeError');
+
+		CreateInvoice::for('Customer', 'Invoiceable')
+			->invoiceLine('Some description', 1, 10000)
+			->save();
+
+		$this->assertDatabaseCount('invoices', 0);
+	}
+
+	/** @test */
 	public function invoice_need_at_least_one_invoice_line_to_be_created()
 	{
 		$this->expectException(\Exception::class);

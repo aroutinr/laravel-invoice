@@ -31,6 +31,10 @@ class PaymentService implements PaymentServiceInterface
 
 	public function save(): Payment
 	{
+		if (!$this->invoice) {
+			throw new \Exception('You must add a Invoice model', 1);
+		}
+
 		if ($this->amount > $this->invoice->balance) {
 			throw new \Exception("The payment amount cannot be higher than the invoice amount", 1);
 		}
