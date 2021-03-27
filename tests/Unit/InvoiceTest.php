@@ -221,4 +221,14 @@ class InvoiceTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    /** @test */
+    public function test_invoice_balance_attribute()
+    {
+		$this->invoice->addInvoiceLine('Some description', 1, 10000);
+
+		$invoice = $this->invoice->save();
+
+		$this->assertSame(10000, $invoice->balance);
+    }
 }

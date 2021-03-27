@@ -105,6 +105,14 @@ class Invoice extends Model
     }
 
     /**
+     * Get the invoice balance
+     */
+    public function getBalanceAttribute()
+    {
+        return $this->amount - $this->payments()->sum('amount');
+    }
+
+    /**
      * Get the invoice amount without discount and tax
      */
     public function getLinesAmountAttribute()
