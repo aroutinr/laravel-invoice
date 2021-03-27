@@ -4,6 +4,7 @@ namespace AroutinR\Invoice\Interfaces;
 use AroutinR\Invoice\Models\Invoice;
 use AroutinR\Invoice\Models\Payment;
 use AroutinR\Invoice\Services\PaymentService;
+use Illuminate\Contracts\View\View;
 
 interface PaymentServiceInterface
 {
@@ -56,4 +57,12 @@ interface PaymentServiceInterface
      * @return Payment
      */
     public function save(): Payment;
+
+    /**
+     * Get the View instance for the payment.
+     *
+     * @param  array  $data
+     * @return \Illuminate\View\View
+     */
+    public function view(array $data = []): View;
 }

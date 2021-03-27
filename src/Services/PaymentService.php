@@ -5,6 +5,7 @@ namespace AroutinR\Invoice\Services;
 use AroutinR\Invoice\Interfaces\PaymentServiceInterface;
 use AroutinR\Invoice\Models\Invoice;
 use AroutinR\Invoice\Models\Payment;
+use Illuminate\Support\Facades\View;
 
 class PaymentService implements PaymentServiceInterface
 {
@@ -74,4 +75,11 @@ class PaymentService implements PaymentServiceInterface
 
 		return $this;
 	}
+
+    public function view(array $data = []): \Illuminate\Contracts\View\View
+    {
+        return View::make('laravel-invoice::payments.payment', array_merge($data, [
+            'payment' => $this->payment,
+        ]));
+    }
 }

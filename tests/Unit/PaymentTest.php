@@ -107,4 +107,21 @@ class PaymentTest extends TestCase
 		$this->assertSame('Check', $payment->method);
 		$this->assertSame('Check # 001122', $payment->reference);
 	}
+
+    /** @test */
+    public function can_render_a_payment_view()
+    {
+		$this->payment->setAmount(10000);
+		$this->payment->setNumber('PAYMENT-123');
+		$this->payment->setMethod('Check');
+		$this->payment->setReference('Check # 001122');
+
+		$payment = $this->payment->save();
+
+        $view = $this->payment->view();
+
+        $rendered = $view->render(); // if view cannot be rendered will fail the test
+
+        $this->assertTrue(true);
+    }
 }
