@@ -26,7 +26,7 @@
             ],
             "aliases": {
                 "Invoice": "AroutinR\\Invoice\\Facades\\Invoice",
-                "Payment": "AroutinR\\Invoice\\Facades\\Payment",
+                "Payment": "AroutinR\\Invoice\\Facades\\Payment"
             }
         }
     },
