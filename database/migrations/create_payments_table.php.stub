@@ -25,7 +25,8 @@ class CreatePaymentsTable extends Migration
 
             $table->foreign('invoice_id')
                 ->references('id')
-                ->on(config('invoice.table_names.invoices'));
+                ->on(config('invoice.table_names.invoices'))
+                ->onDelete('cascade');
         });
     }
 
