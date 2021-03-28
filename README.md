@@ -27,7 +27,7 @@ return CreateInvoice::for($customer, $invoiceable)
 	->invoiceLine('Running Shoes', 1, 7999)
 	->invoiceLine('Another cool product', 1, 9999)
 	->fixedDiscountLine('A Cool Discount', 1000)
-	->taxLine('Tax 3%', 3)
+	->taxLine('Tax 3%', 300)
 	->customField('Origin', 'Houston')
 	->customField('Destination', 'Miami')
 	->customField('Carrier', 'UPS')
@@ -195,8 +195,8 @@ class HomeController extends Controller
 			->fixedDiscountLine('A Cool Discout', 5000) // Optional
 
 			// To add a percentage value for the tax, use the taxLine() method. 
-			// This method requires a description and the value (expressed as a percentage) of the tax.
-			->taxLine('Tax 3%', 3) // Optional
+			// This method requires a description and the value of the tax.
+			->taxLine('Tax 3%', 300) // Optional
 
 			// Use the customField() method to add any additional information to the invoice, 
 			// such as payment terms, warranty information, and so on. 
