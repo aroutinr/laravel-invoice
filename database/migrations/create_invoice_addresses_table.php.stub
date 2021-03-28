@@ -16,13 +16,17 @@ class CreateInvoiceAddressesTable extends Migration
         Schema::create(config('invoice.table_names.invoice_addresses'), function (Blueprint $table) {
             $table->id();
             $table->morphs('customer');
-            $table->foreignId('invoice_id')->constrained(config('invoice.table_names.invoices'));
+            $table->unsignedBigInteger('invoice_id');
             $table->enum('address_type', ['billing', 'shipping']);
             $table->string('name')->nullable();
             $table->string('line_1')->nullable();
             $table->string('line_2')->nullable();
             $table->string('line_3')->nullable();
             $table->timestamps();
+
+            $table->foreign('invoice_id')
+                ->references('id')
+                ->on(config('invoice.table_names.invoices'));
         });
     }
 
