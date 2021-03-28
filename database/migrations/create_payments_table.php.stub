@@ -15,13 +15,18 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create(config('invoice.table_names.payments'), function (Blueprint $table) {
             $table->id();
-            $table->foreignId('invoice_id')->constrained(config('invoice.table_names.invoices'));
+            $table->unsignedBigInteger('invoice_id');
             $table->date('date');
             $table->bigInteger('amount')->default(0);
             $table->string('number')->nullable();
             $table->string('method')->nullable();
             $table->string('reference')->nullable();
             $table->timestamps();
+
+            $table->foreign('invoice_id')
+                ->references('id')
+                ->on(config('invoice.table_names.invoices'))
+                ->onDelete('cascade');
         });
     }
 
