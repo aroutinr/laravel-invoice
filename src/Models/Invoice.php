@@ -143,7 +143,7 @@ class Invoice extends Model
 
         if ($this->discount) {
             $amount -= $this->discount->percent_based
-                ? $amount * $this->discount->amount / 100
+                ? $amount * $this->discount->amount / 10000
                 : $this->discount->amount;
         }
 
@@ -160,7 +160,7 @@ class Invoice extends Model
         }
 
         return $this->discount->percent_based
-            ? $this->getLinesAmountAttribute() * $this->discount->amount / 100
+            ? $this->getLinesAmountAttribute() * $this->discount->amount / 10000
             : $this->discount->amount;
     }
 
@@ -173,6 +173,6 @@ class Invoice extends Model
             throw new \Exception("This invoice does not have taxes", 1);
         }
 
-        return $this->getLinesAmountWithDiscountAttribute() * ($this->tax->amount / 100);
+        return $this->getLinesAmountWithDiscountAttribute() * ($this->tax->amount / 10000);
     }
 }

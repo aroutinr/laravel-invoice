@@ -81,7 +81,7 @@ class InvoiceTest extends TestCase
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)
-			->percentDiscountLine('A Cool Discout', 10)
+			->percentDiscountLine('A Cool Discout', 1000)
 			->save();
 
 		$this->assertSame(27000, $invoice->amount);
@@ -93,7 +93,7 @@ class InvoiceTest extends TestCase
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)
-			->taxLine('Tax 3%', 3)
+			->taxLine('Tax 3%', 300)
 			->save();
 
 		$this->assertSame(30900, $invoice->amount);
@@ -106,7 +106,7 @@ class InvoiceTest extends TestCase
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)
 			->fixedDiscountLine('A Cool Discout', 5000)
-			->taxLine('Tax 3%', 3)
+			->taxLine('Tax 3%', 300)
 			->save();
 
 		$this->assertSame(25750, $invoice->amount);
@@ -118,8 +118,8 @@ class InvoiceTest extends TestCase
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)
-			->percentDiscountLine('A Cool Discout', 10)
-			->taxLine('Tax 3%', 3)
+			->percentDiscountLine('A Cool Discout', 1000)
+			->taxLine('Tax 3%', 300)
 			->save();
 
 		$this->assertSame(27810, $invoice->amount);
@@ -221,7 +221,7 @@ class InvoiceTest extends TestCase
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)
 			->fixedDiscountLine('A Cool Discout', 5000)
-			->taxLine('Tax 3%', 3)
+			->taxLine('Tax 3%', 300)
 			->saveAndView()
 			->render(); // if view cannot be rendered will fail the test
 
@@ -236,5 +236,59 @@ class InvoiceTest extends TestCase
 			->save();
 
 		$this->assertSame(10000, $invoice->balance);
+    }
+
+    /** @test */
+    public function test_invoice_discount_amount_attribute_with_percent_based_discount()
+    {
+    	$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->percentDiscountLine('A Cool Discout', 2000)
+			->save();
+
+		$this->assertSame(8000, $invoice->balance);
+    }
+
+    /** @test */
+    public function test_invoice_tax_amount_attribute()
+    {
+    	$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->taxLine('Tax 3%', 300)
+			->save();
+
+		$this->assertSame(10300, $invoice->balance);
+    }
+
+    /** @test */
+    public function test_invoice_discount_attribute_exception()
+    {
+		$this->expectException(\Exception::class);
+
+    	$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('This invoice does not have discounts');
+
+		$this->assertNull($invoice->discountAmount);
+    }
+
+    /** @test */
+    public function test_invoice_tax_attribute_exception()
+    {
+		$this->expectException(\Exception::class);
+
+    	$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->save();
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('This invoice does not have taxes');
+
+		$this->assertNull($invoice->taxAmount);
     }
 }

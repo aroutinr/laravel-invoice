@@ -241,12 +241,18 @@ class InvoiceService implements InvoiceServiceInterface
 
 		if (Arr::exists($this->lines, 'discount')) {
 			$amount -= $this->lines['discount']['percent_based'] 
-				? $amount * $this->lines['discount']['amount'] / 100
+				// Because amounts are in cents, to get the percent value instead 
+				// of divide by 100, we divide by 10000 to convert amount in decimals 
+				// format an get the percent value 
+				? $amount * $this->lines['discount']['amount'] / 10000 
 				: $this->lines['discount']['amount'];
 		}
 
 		if (Arr::exists($this->lines, 'tax')) {
-			$amount += $amount * ($this->lines['tax']['amount'] / 100);
+			// Because amounts are in cents, to get the percent value instead 
+			// of divide by 100, we divide by 10000 to convert amount in decimals 
+			// format an get the percent value 
+			$amount += $amount * ($this->lines['tax']['amount'] / 10000);
 		}
 
 		return $amount;
