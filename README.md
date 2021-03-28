@@ -1,6 +1,6 @@
 # Laravel Invoice
 
-[![Build Status](https://travis-ci.org/aroutinr/laravel-invoice.svg?branch=master)](https://travis-ci.org/aroutinr/laravel-invoice)
+[![Latest Stable Version](https://poser.pugx.org/aroutinr/laravel-invoice/v)](//packagist.org/packages/aroutinr/laravel-invoice) [![License](https://poser.pugx.org/aroutinr/laravel-invoice/license)](//packagist.org/packages/aroutinr/laravel-invoice) [![Build Status](https://travis-ci.org/aroutinr/laravel-invoice.svg?branch=master)](https://travis-ci.org/aroutinr/laravel-invoice)
 
 Laraval package that allows you to create invoices, manage payments and track them from your models!
 
