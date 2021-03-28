@@ -30,6 +30,10 @@
             }
         }
     },
+    "require": {
+        "php": "^7.2.5",
+        "illuminate/support": "^6.0|^7.0"
+    },
     "require-dev": {
         "orchestra/testbench": "^5.0",
         "phpunit/phpunit": "^9.5"
