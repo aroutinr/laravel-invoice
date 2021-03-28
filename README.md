@@ -40,8 +40,8 @@ This will return a view with a simple and fully customizable invoice format.
 
 ## Requirements
 
-- PHP ^7.2.5
-- Laravel 6 | 7
+- PHP >=7.3
+- Laravel 6 | 7 | 8
 
 ## Install
 
