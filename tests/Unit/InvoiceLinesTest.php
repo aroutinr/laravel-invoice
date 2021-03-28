@@ -65,11 +65,11 @@ class InvoiceLinesTest extends TestCase
 	public function can_add_percent_based_discount_line_to_the_invoice()
 	{
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
-			->percentDiscountLine('A Cool Discout', 10);
+			->percentDiscountLine('A Cool Discout', 1000);
 
 		$this->assertEquals('discount', $invoice->lines['discount']['line_type']);
 		$this->assertEquals('A Cool Discout', $invoice->lines['discount']['description']);
-		$this->assertEquals(10, $invoice->lines['discount']['amount']);
+		$this->assertEquals(1000, $invoice->lines['discount']['amount']);
 		$this->assertTrue($invoice->lines['discount']['percent_based']);
 	}
 
@@ -77,7 +77,7 @@ class InvoiceLinesTest extends TestCase
 	public function only_one_discount_line_can_be_added()
 	{
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
-			->percentDiscountLine('A Cool Discout', 10);
+			->percentDiscountLine('A Cool Discout', 1000);
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
@@ -96,11 +96,11 @@ class InvoiceLinesTest extends TestCase
 	public function can_add_tax_line_to_the_invoice()
 	{
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
-			->taxLine('Tax 3%', 3);
+			->taxLine('Tax 3%', 300);
 
 		$this->assertEquals('tax', $invoice->lines['tax']['line_type']);
 		$this->assertEquals('Tax 3%', $invoice->lines['tax']['description']);
-		$this->assertEquals(3, $invoice->lines['tax']['amount']);
+		$this->assertEquals(300, $invoice->lines['tax']['amount']);
 		$this->assertTrue($invoice->lines['tax']['percent_based']);
 	}
 
@@ -108,14 +108,14 @@ class InvoiceLinesTest extends TestCase
 	public function only_one_tax_line_can_be_added()
 	{
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
-			->taxLine('Tax 3%', 3);
+			->taxLine('Tax 3%', 300);
 
 		$this->expectException('Exception');
 		$this->expectExceptionCode(1);
 		$this->expectExceptionMessage('Only one tax line can be added');
 
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
-			->taxLine('Tax 7%', 7);
+			->taxLine('Tax 7%', 700);
 
 		$this->assertEquals('tax', $invoice->lines['tax']['line_type']);
 		$this->assertEquals('Tax 3%', $invoice->lines['tax']['description']);
@@ -145,8 +145,8 @@ class InvoiceLinesTest extends TestCase
 	{
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
-			->percentDiscountLine('A Cool Discout', 10)
-			->taxLine('Tax 3%', 3)
+			->percentDiscountLine('A Cool Discout', 1000)
+			->taxLine('Tax 3%', 300)
 			->save();
 
 		$this->assertDatabaseCount('invoices', 1);
@@ -162,8 +162,8 @@ class InvoiceLinesTest extends TestCase
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 10000)
-			->percentDiscountLine('A Cool Discout', 10)
-			->taxLine('Tax 3%', 3)
+			->percentDiscountLine('A Cool Discout', 1000)
+			->taxLine('Tax 3%', 300)
 			->save();
 
 		$this->assertDatabaseCount('invoices', 1);
@@ -179,7 +179,7 @@ class InvoiceLinesTest extends TestCase
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)
 			->fixedDiscountLine('A Cool Discout', 5000)
-			->taxLine('Tax 3%', 3)
+			->taxLine('Tax 3%', 300)
 			->save();
 
 		$this->assertDatabaseCount('invoices', 1);
