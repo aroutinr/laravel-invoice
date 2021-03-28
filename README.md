@@ -7,12 +7,32 @@ Laraval package that allows you to create invoices, manage payments and track th
 
 use AroutinR\Inovoice\Facades\CreateInvoice;
 
-$invoice = CreateInvoice::for(User::class, Order::class)
-	->invoiceLine('Your purchase order', 1, 12345)
+return CreateInvoice::for($customer, $invoiceable)
+	->billingAddress([
+		'name' => 'Billing Name',
+		'line_1' => 'Billing Address Line 1',
+		'line_2' => 'Billing Address Line 2',
+		'line_3' => 'Billing Address Line 3',
+	])
+	->shippingAddress([
+		'name' => 'Shipping Name',
+		'line_1' => 'Shipping Address Line 1',
+		'line_2' => 'Shipping Address Line 2',
+		'line_3' => 'Shipping Address Line 3',
+	])
+	->invoiceNumber('00-112233')
+	->invoiceLine('White T-Shirt', 3, 3999)
+	->invoiceLine('Running Shoes', 1, 7999)
+	->invoiceLine('Another cool product', 1, 9999)
+	->fixedDiscountLine('A Cool Discout', 1000)
+	->taxLine('Tax 3%', 3)
+	->customField('Origin', 'Houston')
+	->customField('Destination', 'Miami')
+	->customField('Carrier', 'UPS')
 	->saveAndView();
 ```
 
-This will print an invoice in a simple and fully customizable format.
+This will return a view with a simple and fully customizable invoice format.
 
 ![Laravel Invoice Screenshot](/resources/images/invoice_example.png)
 
@@ -183,7 +203,7 @@ class HomeController extends Controller
 			->customField('Invoice Terms', 'Due on receipt') // Optional
 			->customField('Origin', 'Houston') // Optional
 			->customField('Destination', 'Miami') // Optional
-			->customField('Carrier', 'UPS'); // Optional
+			->customField('Carrier', 'UPS') // Optional
 
 			// Finally, use the save() method to create the invoice and store it in the database 
 			// or saveAndView() to store and return the invoice format for printing.
