@@ -1,5 +1,7 @@
 # Laravel Invoice
 
+[![Build Status](https://travis-ci.org/aroutinr/laravel-invoice.svg?branch=master)](https://travis-ci.org/aroutinr/laravel-invoice)
+
 Laraval package that allows you to create invoices, manage payments and track them from your models!
 
 ```php
