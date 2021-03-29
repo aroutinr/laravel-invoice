@@ -105,12 +105,12 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function invoiceLine(string $description, int $quantity, int $amount): InvoiceService
+	public function invoiceLine(string $description, float $quantity, int $amount): InvoiceService
 	{
 		$this->lines[] = [
 			'line_type' => 'invoice',
 			'description' => $description,
-			'quantity' => $quantity,
+			'quantity' => number_format($quantity, 2),
 			'amount' => $amount,
 		];
 

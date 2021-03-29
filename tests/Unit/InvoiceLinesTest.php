@@ -189,4 +189,31 @@ class InvoiceLinesTest extends TestCase
 		$this->assertEquals(5000, $invoice->discountAmount);
 		$this->assertEquals(750, $invoice->taxAmount);
 	}
+
+	/** @test */
+	public function quantity_field_can_accept_decimals()
+	{
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Line with decimal quantity', 2.15, 10000)
+			->save();
+
+		$this->assertDatabaseCount('invoices', 1);
+		$this->assertDatabaseCount('invoice_lines', 1);
+		$this->assertEquals(2.15, $invoice->lines()->first()->quantity);
+		$this->assertEquals(21500, $invoice->balance);
+	}
+
+	/** @test */
+	public function two_decimals_format_for_quantity()
+	{
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Line with lot of decimal quantity', 2.155567, 10000)
+			->save();
+
+		$this->assertDatabaseCount('invoices', 1);
+		$this->assertDatabaseCount('invoice_lines', 1);
+		$this->assertEquals(2.16, $invoice->lines()->first()->quantity);
+		$this->assertEquals(21600, $invoice->balance);
+
+	}
 }

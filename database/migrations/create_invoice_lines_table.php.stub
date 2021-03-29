@@ -18,7 +18,7 @@ class CreateInvoiceLinesTable extends Migration
             $table->unsignedBigInteger('invoice_id');
             $table->enum('line_type', ['discount', 'invoice', 'tax']);
             $table->string('description')->nullable();
-            $table->bigInteger('quantity')->default(1);
+            $table->decimal('quantity', 12, 2)->default(1);
             $table->bigInteger('amount')->default(0);
             $table->boolean('percent_based')->default(false);
             $table->timestamps();
