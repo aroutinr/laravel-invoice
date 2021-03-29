@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 
 class InvoiceService implements InvoiceServiceInterface
 {
-	public $invoice;
 	public $customer;
 	public $invoiceable;
 	public $number;
@@ -46,7 +45,7 @@ class InvoiceService implements InvoiceServiceInterface
 			throw new \Exception('You must add at least one invoice line to the invoice', 1);
 		}
 
-		$this->invoice = Invoice::create([
+		$invoice = Invoice::create([
 			'customer_type' => get_class($this->customer),
 			'customer_id' => $this->customer->id,
 			'invoiceable_type' => get_class($this->invoiceable),
@@ -58,23 +57,23 @@ class InvoiceService implements InvoiceServiceInterface
 			'custom_fields' => $this->customFields
 		]);
 
-		$this->invoice->lines()->createMany($this->lines);
+		$invoice->lines()->createMany($this->lines);
 
 		if ($this->billingAddress) {
-			$this->invoice->billingAddress()->create($this->billingAddress + [
+			$invoice->billingAddress()->create($this->billingAddress + [
 				'customer_type' => get_class($this->customer),
 				'customer_id' => $this->customer->id,
 			]);
 		}
 
 		if ($this->shippingAddress) {
-			$this->invoice->shippingAddress()->create($this->shippingAddress + [
+			$invoice->shippingAddress()->create($this->shippingAddress + [
 				'customer_type' => get_class($this->customer),
 				'customer_id' => $this->customer->id,
 			]);
 		}
 
-		return $this->invoice;
+		return $invoice;
 	}
 
 	public function invoiceNumber(string $number): InvoiceService
@@ -203,18 +202,18 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-    public function view(array $data = []): \Illuminate\Contracts\View\View
+    public function view(Invoice $invoice, array $data = []): \Illuminate\Contracts\View\View
     {
         return View::make('laravel-invoice::invoices.invoice', array_merge($data, [
-            'invoice' => $this->invoice,
+            'invoice' => $invoice,
         ]));
     }
 
     public function saveAndView(array $data = []): \Illuminate\Contracts\View\View
     {
-    	$this->save();
+    	$invoice = $this->save();
     	
-    	return $this->view();
+    	return $this->view($invoice);
     }
 
 	protected function parseAddress($type, $address): array
