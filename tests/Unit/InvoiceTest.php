@@ -302,4 +302,29 @@ class InvoiceTest extends TestCase
 
 		$this->assertSame('This is a note for the invoice', $invoice->note);
     }
+
+    /** @test */
+    public function invoice_services_properties_are_reseted_after_save()
+    {
+    	$invoice = CreateInvoice::for($this->customer, $this->invoiceable);
+		$invoice->invoiceNumber('INVOICE-1234');
+		$invoice->addNote('This is a note for the invoice');
+		$invoice->customField('Origin', 'Houston');
+		$invoice->invoiceLine('Some description', 1, 10000);
+		$invoice->invoiceLine('Another description', 1, 20000);
+		$invoice->fixedDiscountLine('A Cool Discout', 5000);
+		$invoice->taxLine('Tax 3%', 300);
+		$invoice->save();
+
+		$this->assertNull($invoice->customer);
+		$this->assertNull($invoice->invoiceable);
+		$this->assertNull($invoice->number);
+		$this->assertNull($invoice->currency);
+		$this->assertNull($invoice->date);
+		$this->assertNull($invoice->note);
+		$this->assertEmpty($invoice->lines);
+		$this->assertEmpty($invoice->billingAddress);
+		$this->assertEmpty($invoice->shippingAddress);
+		$this->assertEmpty($invoice->customFields);
+    }
 }

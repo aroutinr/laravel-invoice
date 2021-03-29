@@ -75,6 +75,8 @@ class InvoiceService implements InvoiceServiceInterface
 			]);
 		}
 
+		$this->resetInvoiceService();
+
 		return $invoice;
 	}
 
@@ -204,26 +206,26 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-  public function addNote(string $note): InvoiceService
-  {
-    $this->note = $note;
+	public function addNote(string $note): InvoiceService
+	{
+		$this->note = $note;
 
-    return $this;
-  }
+		return $this;
+	}
 
-  public function view(Invoice $invoice, array $data = []): \Illuminate\Contracts\View\View
-  {
-      return View::make('laravel-invoice::invoices.invoice', array_merge($data, [
-          'invoice' => $invoice,
-      ]));
-  }
+	public function view(Invoice $invoice, array $data = []): \Illuminate\Contracts\View\View
+	{
+		return View::make('laravel-invoice::invoices.invoice', array_merge($data, [
+			'invoice' => $invoice,
+		]));
+	}
 
-  public function saveAndView(array $data = []): \Illuminate\Contracts\View\View
-  {
-    $invoice = $this->save();
+	public function saveAndView(array $data = []): \Illuminate\Contracts\View\View
+	{
+		$invoice = $this->save();
 
-    return $this->view($invoice);
-  }
+		return $this->view($invoice);
+	}
 
 	protected function parseAddress($type, $address): array
 	{
@@ -269,5 +271,19 @@ class InvoiceService implements InvoiceServiceInterface
 		}
 
 		return $amount;
+	}
+
+	protected function resetInvoiceService()
+	{
+		$this->customer = null;
+		$this->invoiceable = null;
+		$this->number = null;
+		$this->currency = null;
+		$this->date = null;
+		$this->lines = array();
+		$this->billingAddress = array();
+		$this->shippingAddress = array();
+		$this->customFields = array();
+		$this->note = null;
 	}
 }
