@@ -58,7 +58,7 @@ interface InvoiceServiceInterface
      *
      * @return InvoiceService
      */
-    public function invoiceLine(string $description, int $quantity, int $amount): InvoiceService;
+    public function invoiceLine(string $description, float $quantity, int $amount): InvoiceService;
 
     /**
      * Add multiple invoice lines type to the invoice.
