@@ -147,16 +147,17 @@ class HomeController extends Controller
     	$invoice = CreateInvoice::for($customer, $invoiceable)
 
     		// Use the billingAddress() and shippingAddress() methods to add this information to the invoice.
+    		// It is required to pass name and at least line_1 to the method.
     		// These methods accept an array in the following format:
 			->billingAddress([
-				'name' => 'Billing Name',
-				'line_1' => 'Billing Line 1',
+				'name' => 'Billing Name', // required
+				'line_1' => 'Billing Line 1', // required
 				'line_2' => 'Billing Line 2',
 				'line_3' => 'Billing Line 3',
 			]) // Optional
 			->shippingAddress([
-				'name' => 'Shipping Name',
-				'line_1' => 'Shipping Line 1',
+				'name' => 'Shipping Name', // required
+				'line_1' => 'Shipping Line 1', // required
 				'line_2' => 'Shipping Line 2',
 				'line_3' => 'Shipping Line 3',
 			]) // Optional

@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-invoice` will be documented in this file.
 
+##  1.0.3 - 2021-03-28
+- Minimun requirements to add billing and invoice address
+
 ##  1.0.2 - 2021-03-28
 - Fix percent Discount and Tax operation
 
