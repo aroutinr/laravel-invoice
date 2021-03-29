@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-invoice` will be documented in this file.
 
+##  1.0.4 - 2021-03-29
+- Changes on InvoiceService
+- Add invoice notes
+
 ##  1.0.3 - 2021-03-28
 - Minimun requirements to add billing and invoice address
 
