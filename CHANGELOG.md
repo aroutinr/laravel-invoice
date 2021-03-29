@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-invoice` will be documented in this file.
 
+##  1.0.5 - 2021-03-29
+- Reset InvoiceService properties after save
+
 ##  1.0.4 - 2021-03-29
 - Changes on InvoiceService
 - Add invoice notes
