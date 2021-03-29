@@ -110,6 +110,13 @@ interface InvoiceServiceInterface
     public function customField(string $name, string $value): InvoiceService;
 
     /**
+     * Add notes to the invoice
+     * 
+     * @return InvoiceService
+     */
+    public function addNote(string $note): InvoiceService;
+
+    /**
      * Get the View instance for the invoice.
      *
      * @param  array  $data

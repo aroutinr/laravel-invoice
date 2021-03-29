@@ -21,6 +21,7 @@ class InvoiceService implements InvoiceServiceInterface
 	public $billingAddress;
 	public $shippingAddress;
 	public $customFields = array();
+	public $note;
 
 	public function __construct()
 	{
@@ -55,7 +56,8 @@ class InvoiceService implements InvoiceServiceInterface
 			'currency' => $this->currency,
 			'date' => $this->date,
 			'amount' => $this->calculateInvoiceAmount(),
-			'custom_fields' => $this->customFields
+			'custom_fields' => $this->customFields,
+			'note' => $this->note,
 		]);
 
 		$this->invoice->lines()->createMany($this->lines);
@@ -199,6 +201,13 @@ class InvoiceService implements InvoiceServiceInterface
 			'name' => $name,
 			'value' => $value,
 		];
+
+		return $this;
+	}
+
+	public function addNote(string $note): InvoiceService
+	{
+		$this->note = $note;
 
 		return $this;
 	}
