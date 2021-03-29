@@ -110,7 +110,7 @@ class InvoiceService implements InvoiceServiceInterface
 		$this->lines[] = [
 			'line_type' => 'invoice',
 			'description' => $description,
-			'quantity' => number_format($quantity, 2),
+			'quantity' => number_format($quantity, 2, '.', ''),
 			'amount' => $amount,
 		];
 
