@@ -319,8 +319,8 @@ class InvoiceTest extends TestCase
 		$this->assertNull($invoice->customer);
 		$this->assertNull($invoice->invoiceable);
 		$this->assertNull($invoice->number);
-		$this->assertNull($invoice->currency);
-		$this->assertNull($invoice->date);
+		$this->assertNotNull($invoice->currency);
+		$this->assertNotNull($invoice->date);
 		$this->assertNull($invoice->note);
 		$this->assertEmpty($invoice->lines);
 		$this->assertEmpty($invoice->billingAddress);

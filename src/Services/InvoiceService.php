@@ -278,8 +278,8 @@ class InvoiceService implements InvoiceServiceInterface
 		$this->customer = null;
 		$this->invoiceable = null;
 		$this->number = null;
-		$this->currency = null;
-		$this->date = null;
+		$this->currency = config('invoice.currency');
+		$this->date = now()->format('Y-m-d');
 		$this->lines = array();
 		$this->billingAddress = array();
 		$this->shippingAddress = array();
