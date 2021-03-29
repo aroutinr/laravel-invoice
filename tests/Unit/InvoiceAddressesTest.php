@@ -11,6 +11,35 @@ class InvoiceAddressesTest extends TestCase
 	use RefreshDatabase;
 
 	/** @test */
+	public function require_name_and_line_1_to_add_billing_address()
+	{
+		$this->expectException(\Exception::class);
+
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->billingAddress([]);
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('The billing address requires a name and at least one address line');
+	}
+
+	/** @test */
+	public function minimun_data_to_add_billing_address()
+	{
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->billingAddress([
+				'name' => 'Billing Name',
+				'line_1' => 'Billing Line 1',
+			]);
+
+		$this->assertEquals('billing', $invoice->billingAddress['address_type']);
+		$this->assertEquals('Billing Name', $invoice->billingAddress['name']);
+		$this->assertEquals('Billing Line 1', $invoice->billingAddress['line_1']);
+		$this->assertNull($invoice->billingAddress['line_2']);
+		$this->assertNull($invoice->billingAddress['line_3']);
+	}
+
+	/** @test */
 	public function can_add_billing_address_to_the_invoice()
 	{
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
@@ -27,6 +56,35 @@ class InvoiceAddressesTest extends TestCase
 		$this->assertEquals('Billing Line 1', $invoice->billingAddress['line_1']);
 		$this->assertEquals('Billing Line 2', $invoice->billingAddress['line_2']);
 		$this->assertEquals('Billing Line 3', $invoice->billingAddress['line_3']);
+	}
+
+	/** @test */
+	public function require_name_and_line_1_to_add_shipping_address()
+	{
+		$this->expectException(\Exception::class);
+
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->shippingAddress([]);
+
+		$this->expectException('Exception');
+		$this->expectExceptionCode(1);
+		$this->expectExceptionMessage('The shipping address requires a name and at least one address line');
+	}
+
+	/** @test */
+	public function minimun_data_to_add_shipping_address()
+	{
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->shippingAddress([
+				'name' => 'Billing Name',
+				'line_1' => 'Billing Line 1',
+			]);
+
+		$this->assertEquals('shipping', $invoice->shippingAddress['address_type']);
+		$this->assertEquals('Billing Name', $invoice->shippingAddress['name']);
+		$this->assertEquals('Billing Line 1', $invoice->shippingAddress['line_1']);
+		$this->assertNull($invoice->shippingAddress['line_2']);
+		$this->assertNull($invoice->shippingAddress['line_3']);
 	}
 
 	/** @test */
