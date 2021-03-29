@@ -20,6 +20,7 @@ class InvoiceService implements InvoiceServiceInterface
 	public $billingAddress;
 	public $shippingAddress;
 	public $customFields = array();
+	public $note;
 
 	public function __construct()
 	{
@@ -54,7 +55,8 @@ class InvoiceService implements InvoiceServiceInterface
 			'currency' => $this->currency,
 			'date' => $this->date,
 			'amount' => $this->calculateInvoiceAmount(),
-			'custom_fields' => $this->customFields
+			'custom_fields' => $this->customFields,
+			'note' => $this->note,
 		]);
 
 		$invoice->lines()->createMany($this->lines);
@@ -202,19 +204,26 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-    public function view(Invoice $invoice, array $data = []): \Illuminate\Contracts\View\View
-    {
-        return View::make('laravel-invoice::invoices.invoice', array_merge($data, [
-            'invoice' => $invoice,
-        ]));
-    }
+  public function addNote(string $note): InvoiceService
+  {
+    $this->note = $note;
 
-    public function saveAndView(array $data = []): \Illuminate\Contracts\View\View
-    {
-    	$invoice = $this->save();
-    	
-    	return $this->view($invoice);
-    }
+    return $this;
+  }
+
+  public function view(Invoice $invoice, array $data = []): \Illuminate\Contracts\View\View
+  {
+      return View::make('laravel-invoice::invoices.invoice', array_merge($data, [
+          'invoice' => $invoice,
+      ]));
+  }
+
+  public function saveAndView(array $data = []): \Illuminate\Contracts\View\View
+  {
+    $invoice = $this->save();
+
+    return $this->view($invoice);
+  }
 
 	protected function parseAddress($type, $address): array
 	{

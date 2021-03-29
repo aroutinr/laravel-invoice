@@ -291,4 +291,15 @@ class InvoiceTest extends TestCase
 
 		$this->assertNull($invoice->taxAmount);
     }
+
+    /** @test */
+    public function can_add_notes_to_invoice()
+    {
+    	$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->addNote('This is a note for the invoice')
+			->save();
+
+		$this->assertSame('This is a note for the invoice', $invoice->note);
+    }
 }
