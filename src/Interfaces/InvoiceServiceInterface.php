@@ -122,7 +122,7 @@ interface InvoiceServiceInterface
      * @param  array  $data
      * @return \Illuminate\View\View
      */
-    public function view(array $data = []): View;
+    public function view(Invoice $invoice, array $data = []): View;
 
     /**
      * Save the invoice to the database and get the View instance for the invoice.
