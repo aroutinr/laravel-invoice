@@ -272,6 +272,7 @@ __AroutinR\Invoice\Facades\CreateInvoice__
 | invoiceCurrency() | Optional. Arguments: (string) currency code |
 | invoiceNumber() | Optional. Arguments: (string) invoice number |
 | invoiceDate() | Optional. Arguments: (string) invoice date |
+| invoiceDueDate() | Optional. Arguments: (string) invoice due date |
 | fixedDiscountLine() | Optional. Arguments: (string) description, (int) amount |
 | percentDiscountLine() | Optional. Arguments: (string) description, (int) amount |
 | taxLine() | Optional. Arguments: (string) description, (int) amount |
