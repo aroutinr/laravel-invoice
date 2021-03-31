@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-invoice` will be documented in this file.
 
+##  1.0.9 - 2021-03-31
+- Added Due date to invoices
+
 ##  1.0.8 - 2021-03-29
 - fix quantity number format
 
