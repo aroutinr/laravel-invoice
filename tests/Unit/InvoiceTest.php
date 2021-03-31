@@ -153,6 +153,27 @@ class InvoiceTest extends TestCase
 	}
 
 	/** @test */
+	public function can_add_due_date()
+	{
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceDueDate('2021-04-15');
+
+		$this->assertEquals('2021-04-15', $invoice->dueDate);
+	}
+
+	/** @test */
+	public function due_date_is_saved_to_the_database()
+	{
+		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceLine('Some description', 1, 10000)
+			->invoiceDueDate('2021-04-15')
+			->save();
+
+		$this->assertDatabaseCount('invoices', 1);
+		$this->assertEquals('2021-04-15', $invoice->due_date);
+	}
+
+	/** @test */
 	public function currency_can_only_have_three_characters()
 	{
 		$this->expectException(\Exception::class);
@@ -217,6 +238,7 @@ class InvoiceTest extends TestCase
     public function can_render_a_invoice_view()
     {
     	$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->invoiceDueDate('2021-04-15')
 			->customField('Origin', 'Houston')
 			->invoiceLine('Some description', 1, 10000)
 			->invoiceLine('Another description', 1, 20000)

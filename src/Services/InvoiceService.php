@@ -16,6 +16,7 @@ class InvoiceService implements InvoiceServiceInterface
 	public $number;
 	public $currency;
 	public $date;
+	public $dueDate;
 	public $lines = array();
 	public $billingAddress;
 	public $shippingAddress;
@@ -54,6 +55,7 @@ class InvoiceService implements InvoiceServiceInterface
 			'number' => $this->number,
 			'currency' => $this->currency,
 			'date' => $this->date,
+			'due_date' => $this->dueDate,
 			'amount' => $this->calculateInvoiceAmount(),
 			'custom_fields' => $this->customFields,
 			'note' => $this->note,
@@ -101,6 +103,13 @@ class InvoiceService implements InvoiceServiceInterface
 	public function invoiceDate(string $date): InvoiceService
 	{
 		$this->date = $date;
+
+		return $this;
+	}
+
+	public function invoiceDueDate(string $dueDate): InvoiceService
+	{
+		$this->dueDate = $dueDate;
 
 		return $this;
 	}
