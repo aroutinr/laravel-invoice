@@ -174,7 +174,13 @@
 		</div>
 		<div id="invoice-details">
 			<h1 class="title">Invoice Number: {{ $invoice->number ?? 'N/A' }}</h1>
-			<p>Date: <strong>{{ $invoice->date }}</strong></p>
+			<p>
+				Date: <strong>{{ $invoice->date }}</strong> 
+				@isset ($invoice->due_date)
+					| 
+					Due Date: <strong>{{ $invoice->due_date }}</strong>
+				@endisset
+			</p>
 			<p>Currency: <strong>{{ $invoice->currency }}</strong></p>
 		</div>
 	</header>
