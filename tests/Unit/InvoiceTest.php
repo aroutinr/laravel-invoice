@@ -201,8 +201,7 @@ class InvoiceTest extends TestCase
 		$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
 			->customField('Origin', 'Houston');
 
-		$this->assertEquals('Origin', $invoice->customFields[0]['name']);
-		$this->assertEquals('Houston', $invoice->customFields[0]['value']);
+		$this->assertEquals('Houston', $invoice->customFields['Origin']);
 	}
 
 	/** @test */
@@ -230,8 +229,7 @@ class InvoiceTest extends TestCase
 			->customField('Origin', 'Houston')
 			->save();
 
-		$this->assertEquals('Origin', $invoice->custom_fields[0]['name']);
-		$this->assertEquals('Houston', $invoice->custom_fields[0]['value']);
+		$this->assertEquals('Houston', $invoice->custom_fields['Origin']);
 	}
 
     /** @test */
