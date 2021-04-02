@@ -201,16 +201,13 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this;
 	}
 
-	public function customField(string $name, string $value): InvoiceService
+	public function customField(string $key, string $value): InvoiceService
 	{
 		if (count($this->customFields) === config('invoice.custom_fields', 4)) {
 			throw new \Exception('You can add a maximum of ' . config('invoice.custom_fields', 4) .' custom fields', 1);
 		}
 
-		$this->customFields[] = [
-			'name' => $name,
-			'value' => $value,
-		];
+		$this->customFields[$key] = $value;
 
 		return $this;
 	}

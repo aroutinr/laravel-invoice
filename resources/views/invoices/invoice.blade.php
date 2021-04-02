@@ -263,8 +263,8 @@
 			<tfoot>
 				<tr>
 					<th class="text-left">
-						@foreach ($invoice->custom_fields as $field)
-							{{ $field['name'] }}: {{ $field['value'] }}
+						@foreach ($invoice->custom_fields as $key => $value)
+							{{ $key }}: {{ $value }}
 							<br />
 						@endforeach
 					</th>
