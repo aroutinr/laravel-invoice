@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-invoice` will be documented in this file.
 
+##  1.0.11 - 2021-04-02
+- Add update() method for update a invoice
+
 ##  1.0.10 - 2021-04-02
 - Change custom fields array format 
 
