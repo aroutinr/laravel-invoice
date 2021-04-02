@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-invoice` will be documented in this file.
 
+##  1.0.10 - 2021-04-02
+- Change custom fields array format 
+
 ##  1.0.9 - 2021-03-31
 - Added Due date to invoices
 
