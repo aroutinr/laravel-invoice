@@ -82,6 +82,55 @@ class InvoiceService implements InvoiceServiceInterface
 		return $invoice;
 	}
 
+	public function update(Invoice $invoice): Invoice
+	{
+		if (!$this->customer || !$this->invoiceable || !$invoice) {
+			throw new \Exception('You must add a Customer and Invoiceable model and the Invoice to be Update', 1);
+		}
+
+		$invoice->update([
+			'customer_type' => get_class($this->customer),
+			'customer_id' => $this->customer->id,
+			'invoiceable_type' => get_class($this->invoiceable),
+			'invoiceable_id' => $this->invoiceable->id,
+			'number' => $this->number,
+			'currency' => $this->currency,
+			'date' => $this->date,
+			'due_date' => $this->dueDate,
+			'amount' => $this->calculateInvoiceAmount(),
+			'custom_fields' => $this->customFields,
+			'note' => $this->note,
+		]);
+
+		$invoice->lines()->delete();
+		$invoice->discount()->delete();
+		$invoice->tax()->delete();
+
+		$invoice->lines()->createMany($this->lines);
+
+		if ($this->billingAddress) {
+			$invoice->billingAddress()->delete();
+
+			$invoice->billingAddress()->create($this->billingAddress + [
+				'customer_type' => get_class($this->customer),
+				'customer_id' => $this->customer->id,
+			]);
+		}
+
+		if ($this->shippingAddress) {
+			$invoice->shippingAddress()->delete();
+
+			$invoice->shippingAddress()->create($this->shippingAddress + [
+				'customer_type' => get_class($this->customer),
+				'customer_id' => $this->customer->id,
+			]);
+		}
+
+		$this->resetInvoiceService();
+
+		return $invoice;
+	}
+
 	public function invoiceNumber(string $number): InvoiceService
 	{
 		$this->number = $number;

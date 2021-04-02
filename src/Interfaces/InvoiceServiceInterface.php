@@ -33,6 +33,13 @@ interface InvoiceServiceInterface
     public function save(): Invoice;
 
     /**
+     * Update the invoice to the database.
+     *
+     * @return Invoice
+     */
+    public function update(Invoice $invoice): Invoice;
+
+    /**
      * Set the number for the invoice.
      *
      * @return InvoiceService

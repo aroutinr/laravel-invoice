@@ -3,6 +3,7 @@
 namespace AroutinR\Invoice\Tests\Unit;
 
 use AroutinR\Invoice\Facades\CreateInvoice;
+use AroutinR\Invoice\Models\Invoice;
 use AroutinR\Invoice\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -50,6 +51,62 @@ class InvoiceTest extends TestCase
 		$this->expectExceptionMessage('You must add at least one invoice line to the invoice');
 
 		$this->assertDatabaseCount('invoices', 0);
+	}
+
+	/** @test */
+	public function needs_to_pass_the_invoice_to_be_update()
+	{
+		$this->expectException('ArgumentCountError');
+
+		CreateInvoice::invoiceLine('Some description', 1, 10000)
+			->update();
+	}
+
+    /** @test */
+    public function can_create_and_update_a_invoice()
+    {
+    	$invoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->billingAddress([
+				'name' => 'Billing Name',
+				'line_1' => 'Billing Line 1',
+			])
+			->shippingAddress([
+				'name' => 'Shipping Name',
+				'line_1' => 'Shipping Line 1',
+			])
+			->invoiceDueDate('2021-04-15')
+			->customField('Origin', 'Houston')
+			->customField('Destination', 'Miami')
+			->invoiceLine('Some description', 1, 10000)
+			->fixedDiscountLine('A Cool Discout', 5000)
+			->taxLine('Tax 3%', 300)
+			->save();
+
+    	$updatedInvoice = CreateInvoice::for($this->customer, $this->invoiceable)
+			->billingAddress([
+				'name' => 'New Billing Name',
+				'line_1' => 'New Billing Line 1',
+			])
+			->shippingAddress([
+				'name' => 'New Shipping Name',
+				'line_1' => 'New Shipping Line 1',
+			])
+			->invoiceDueDate('2021-04-30')
+			->customField('Origin', 'Texas')
+			->customField('Destination', 'Florida')
+			->invoiceLine('Some description', 2, 10000, 1)
+			->invoiceLine('Another description', 2, 20000)
+			->invoiceLine('Another description', 2, 30000)
+			->fixedDiscountLine('A Cool Discout', 10000, 4)
+			->update($invoice);
+
+		$this->assertDatabaseCount('invoice_lines', 4);
+		$this->assertDatabaseCount('invoice_addresses', 2);
+		$this->assertSame('2021-04-30', $updatedInvoice->due_date);
+		$this->assertSame('Texas', $updatedInvoice->custom_fields['Origin']);
+		$this->assertSame('Florida', $updatedInvoice->custom_fields['Destination']);
+		$this->assertSame(110000, $updatedInvoice->balance);
+		$this->assertSame('New Billing Name', $updatedInvoice->billingAddress->name);
 	}
 
 	/** @test */
