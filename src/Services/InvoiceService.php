@@ -282,24 +282,7 @@ class InvoiceService implements InvoiceServiceInterface
 		return $this->view($invoice);
 	}
 
-	protected function parseAddress($type, $address): array
-	{
-		if (!Arr::exists($address, 'name') || !Arr::exists($address, 'line_1')) {
-			throw new \Exception(sprintf(
-				"The %s address requires a name and at least one address line", $type
-			), 1);
-		}
-
-		return [
-			'address_type' => $type,
-			'name' => $address['name'],
-			'line_1' => $address['line_1'],
-			'line_2' => $address['line_2'] ?? null,
-			'line_3' => $address['line_3'] ?? null,
-		];
-	}
-
-	protected function calculateInvoiceAmount(): int
+	public function calculateInvoiceAmount(): int
 	{
 		$amount = 0;
 
@@ -326,6 +309,23 @@ class InvoiceService implements InvoiceServiceInterface
 		}
 
 		return $amount;
+	}
+
+	protected function parseAddress($type, $address): array
+	{
+		if (!Arr::exists($address, 'name') || !Arr::exists($address, 'line_1')) {
+			throw new \Exception(sprintf(
+				"The %s address requires a name and at least one address line", $type
+			), 1);
+		}
+
+		return [
+			'address_type' => $type,
+			'name' => $address['name'],
+			'line_1' => $address['line_1'],
+			'line_2' => $address['line_2'] ?? null,
+			'line_3' => $address['line_3'] ?? null,
+		];
 	}
 
 	protected function resetInvoiceService()
