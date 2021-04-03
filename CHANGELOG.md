@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-invoice` will be documented in this file.
 
+##  1.0.12 - 2021-04-02
+- Method calculateInvoiceAmount public
+
 ##  1.0.11 - 2021-04-02
 - Add update() method for update a invoice
 
